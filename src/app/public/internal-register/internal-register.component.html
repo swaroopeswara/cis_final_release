@@ -1,0 +1,350 @@
+<div class="login-container" style="background-image: url('../../../assets/img/c8.jpg');">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="col-xl-9 col-md-6 col-10 mx-auto">
+        <div class="card">
+            <div class="card-body widget-body ">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h2 class="card-title"><img src="../../../assets/img/logo/drdlr-logo.png" alt=""></h2>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div *ngFor="let step of steps; let last = last" class="col-md-4 col-sm-6 col-12 step"
+                                [class.active]="step.active" [class.valid]="step.valid" [ngClass]="{'last' : last }">
+                                <div class="step-icon">
+                                    <i class="fa {{ step.icon }}" aria-hidden="true"></i>
+                                </div>
+                                <span class="step-name" [class.active]="step.active"
+                                    [class.valid]="step.valid">{{step.name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngFor="let step of steps" [hidden]="!step.active" class="col form-wizard">
+                    <div class="row form-title">
+                        <h4><i class="fa {{ step.icon }}"></i> {{step.name}}</h4>
+                    </div>
+
+                    <form *ngIf="step.name=='User Information'" [formGroup]="userInfoForm" class="row">
+
+                        <div class="form-group col-md-6 mb-3">
+
+                        </div>
+                        <div class="form-group col-md-6 mb-3">
+
+                        </div>
+                        <div class="form-group col-md-4 mb-3"
+                            [ngClass]="{'has-danger' : step.hasError && userInfoForm.get('email').hasError('required'), 'has-success' : !userInfoForm.get('email').hasError('required') }">
+                            <label class="form-control-label">Enter Departmental Username</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                </div>
+                                <input formControlName="username" id="drdlrusername" class="form-control" type="text">
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('username').hasError('required')">Username is
+                                required</span>
+                            <!-- <span class="help-block text-danger"
+                                *ngIf="hasError && userInfoForm.get('email').hasError('required')">Email is
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && userInfoForm.get('email').hasError('invalidEmail')">Invalid
+                                email address</span> -->
+                            <span class="help-block text-danger" *ngIf="hasError && invalidLogin">Invalid Login
+                                Credentials or User doesnt exist</span>
+                        </div>
+                        <div class="form-group col-md-4 mb-3">
+                            <label class="form-control-label">Enter Departmental Password</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-key"></i></span>
+                                </div>
+                                <input formControlName="password" id="drdlrpassword" class="form-control"
+                                    type="password">
+
+                                <button type="button" (click)="getUserFromAD()" class="btn btn-primary btn-rounded"><i
+                                        class="fa fa-arrow-right"></i></button>
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('password').hasError('required')">Password is
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && userInfoForm.get('password').hasError('required')">Password is
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('password').hasError('required')">Password is
+                                required</span>
+                        </div>
+                        <div class="form-group col-md-4 mb-3">
+                        </div>
+
+                        <div class="form-group col-md-2" *ngIf="foundUser">
+                            <label class="form-control-label">Title</label>
+                            <select formControlName="title" class="form-control">
+                                <option>Mr</option>
+                                <option>Mrs</option>
+                                <option>Dr</option>
+                                <option>Miss</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('title').hasError('required')">*
+                                required</span>
+                        </div>
+                        <div class="form-group col-md-4" *ngIf="foundUser">
+                            <label class="form-control-label">First Name</label>
+                            <input disabled formControlName="firstName" class="form-control" type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('firstName').hasError('required')">First Name
+                                is required</span>
+                            <span class="help-block text-danger" *ngIf="noUser">User doesnt exist. Please ensure
+                                email and password are correct.</span>
+                        </div>
+
+                        <div class="form-group col-md-3" *ngIf="foundUser">
+                            <label class="form-control-label">Last Name</label>
+                            <input disabled formControlName="lastName" class="form-control" type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('lastName').hasError('required')">Last Name is
+                                required</span>
+                        </div>
+                        <div class="form-group col-md-3" *ngIf="foundUser">
+                            <label class="form-control-label">Email</label>
+                            <input disabled formControlName="email" class="form-control" type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('email').hasError('required')">Company Email is
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('email').hasError('pattern')">Email must end
+                                with drdlr.gov.za</span>
+                        </div>
+
+                        <div class="form-group col-md-4" *ngIf="foundUser">
+                            <label class="form-control-label">Mobile</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-mobile-phone"></i></span>
+                                </div>
+                                <input formControlName="mobileno" maxlength="20" class="form-control" type="text">
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('mobileno').hasError('required')">*
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('mobileno').hasError('minlength')">Minimum of
+                                10
+                                characters</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('mobileno').hasError('pattern')">Must be
+                                numeric</span>
+                        </div>
+
+                        <div class="form-group col-md-4" *ngIf="foundUser">
+                            <label class="form-control-label">Telephone No</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                                </div>
+                                <input formControlName="telephone" maxlength="20" class="form-control"
+                                    [ngClass]="{'form-control-danger' :  userInfoForm.get('telephone').hasError('required'), 'form-control-success' :  !userInfoForm.get('telephone').hasError('required') }"
+                                    type="text">
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('telephone').hasError('pattern')">Must be
+                                numeric</span>
+
+                        </div>
+
+                        <div class="form-group col-md-4" *ngIf="foundUser">
+                            <label class="form-control-label">Designation</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                </div>
+                                <!-- <input formControlName="designation" maxlength="50" class="form-control"
+                                    [ngClass]="{'form-control-danger' :  userInfoForm.get('designation').hasError('required'), 'form-control-success' :  !userInfoForm.get('telephone').hasError('required') }"
+                                    type="text"> -->
+                                <select formControlName="designation" class="form-control">
+                                    <option value="{{t.designationName}}" *ngFor="let t of designations">
+                                        {{t.designationName}}</option>
+                                </select>
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && userInfoForm.get('designation').hasError('required')">*
+                                required</span>
+
+                        </div>
+                    </form>
+
+                    <form *ngIf="step.name=='Roles Information'" class="row">
+                        <div class="form-group col-md-3">
+                            <button [hidden]="internalUserRoles.length > 0" (click)="clearRoleData()"
+                                href="javascript:void(0);" data-toggle="modal" data-target="#addRole"
+                                data-dismiss="modal" class="btn btn-primary btn-sm" type="button"><i
+                                    class="fa fa-plus"></i> Add</button>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <span class="help-block text-danger" *ngIf="allRoles.length == 0">* Must add a Role</span>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <table *ngIf="internalUserRoles !== undefined" class="table table-sm">
+                                <thead style="background-color:#f1f0d7;font-size: 14px;">
+                                    <tr>
+                                        <th>Role Name</th>
+                                        <th>Section Name</th>
+                                        <th>Province Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let u of internalUserRoles">
+                                        <td>{{u.roleName}}</td>
+                                        <td>{{u.sectionName}}</td>
+                                        <td>{{u.provinceName}}</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" type="button"
+                                                (click)="removeRole(u)"><i class="fa fa-close "></i></button>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="abc-checkbox abc-checkbox-primary">
+                                <input id="checkbox1" formControlName="news" type="checkbox">
+                                <label for="checkbox1">Enable News Notifications</label>
+                            </div>
+                            <div class="abc-checkbox abc-checkbox-primary">
+                                <input id="checkbox2" formControlName="events" type="checkbox">
+                                <label for="checkbox2">Enable Events Notifications</label>
+                            </div>
+                            <div class="abc-checkbox abc-checkbox-primary">
+                                <input id="checkbox3" formControlName="information" type="checkbox">
+                                <label for="checkbox3">Enable Information Notifications</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <hr>
+                <div class="row">
+                    <div class="col-12">
+                        <a *ngIf="this.steps[0].active" [routerLink]="['/login']"><button
+                                class="btn btn-primary pull-left"><i class="fa fa-arrow-left"></i>&nbsp; Back to
+                                Login</button></a>
+                        <button *ngIf="!steps[steps.length-1].active" class="btn btn-primary pull-right"
+                            (click)="next()">Next Step &nbsp;<i class="fa fa-chevron-right arrow"></i></button>
+                        <button *ngIf="steps[steps.length-1].active" class="btn btn-primary pull-right"
+                            (click)="confirm()">Submit &nbsp;<i class="fa fa-check arrow"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true "
+    data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog " role="document " style="width:320px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Add Role</h6>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="rolesForm">
+                    <fieldset class="required">
+                        <div class="form-group required">
+                            <label for="input-payment-city" class="control-label">Province Name</label>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && rolesForm.get('provinceName').hasError('required')">*
+                                (required)</span>
+                            <select formControlName="provinceName" class="form-control">
+                                <option value="{{t.code}}={{t.name}}" *ngFor="let t of provinces">{{t.name}}</option>
+                            </select>
+                        </div>
+                        <div *ngIf="!rolesForm.get('provinceName').hasError('required')" class="form-group required">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input id="radio1" type="radio" name="radioInline" (change)="onItemChange('Provincial')"
+                                    class="custom-control-input radio-warning">
+                                <label class="custom-control-label" for="radio1">Provincial Role</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input id="radio2" type="radio" name="radioInline" (change)="onItemChange('Sectional')"
+                                    class="custom-control-input radio-warning">
+                                <label class="custom-control-label" for="radio2">Sectional Role</label>
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && rolesForm.get('roleType').hasError('required')">*
+                                (required)</span>
+                        </div>
+
+                        <div *ngIf="roleTypeName == 'Sectional'" class="form-group required">
+                            <label for="input-payment-city" class="control-label">Section Name</label>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && rolesForm.get('sectionName').hasError('required')">*
+                                (required)</span>
+                            <span class="help-block text-danger" *ngIf="sameSection">*
+                                (Role for this Section is already added)</span>
+                            <select formControlName="sectionName" class="form-control"
+                                (change)="getRolesBySectionsAndProvince($event.target.value)">
+                                <option value=""></option>
+                                <option value="{{t.code}}={{t.name}}" *ngFor="let t of sections">{{t.name}}</option>
+                            </select>
+                        </div>
+                        <div *ngIf="roleTypeName == 'Sectional' || roleTypeName == 'Provincial'"
+                            class="form-group required">
+                            <label for="input-payment-city" class="control-label">Role Name</label>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && rolesForm.get('roleName').hasError('required')">*
+                                (required)</span>
+                            <select formControlName="roleName" class="form-control"
+                                (change)="changeInternalRole($event.target)">
+                                <option value=""></option>
+                                <option value="{{t.roleCode}}={{t.roleName}}" *ngFor="let t of roles">{{t.roleName}}
+                                </option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && rolesForm.get('register').hasError('pattern')">Registration is
+                                disabled for this Role. Please contact admin@drdlr.gov.za to get more Information</span>
+                        </div>
+                        <div *ngIf="roleTypeName == 'Sectional' || roleTypeName == 'Provincial'"
+                            class="form-group required">
+                            <label for="input-payment-city" class="control-label">Signed Access Doc</label>
+                            <span class="help-block text-danger" *ngIf="signedAccessUploaded">* (required)</span>
+                            <div class="input-group file-upload">
+                                <input type="file" multiple (change)="filetempupload(input)" #input
+                                    class="file-upload-btn" />
+                                <input type="text" class="form-control col-sm-6" style="font-size: 12px;"
+                                    value="{{file}}">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" style="font-size: 16px;" type="button"><i
+                                            class="fa fa-folder-open-o" aria-hidden="true"></i> Browse..</button>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" *ngIf="roleTypeName == 'Sectional'" class="btn btn-primary"
+                    (click)="createNewSection()">Add</button>
+                <button type="button" *ngIf="roleTypeName == 'Provincial'" class="btn btn-primary"
+                    (click)="createNewRole()">Add</button>
+                <button type="button" id="btnAddRolePopupClose" class="btn btn-previous" (click)="clearSection()"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

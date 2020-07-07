@@ -1,0 +1,139 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#in"><i
+                                                class="fa fa-users"></i>
+                                            My Queries</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="in">
+
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-search"></i>
+                                                </span>
+                                                <input class="form-control custom-textbox" type="text"
+                                                    placeholder="Search" style="font-size: 13px;"
+                                                    (keyup)="updateFilter($event)" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6" style="text-align: right;">
+                                            <button type="button" class="btn btn-primary" (click)="getMyQueries()"><i
+                                                    class="fa fa-refresh"></i>
+                                                Refresh</button>
+                                        </div>
+                                    </div>
+                                    <data-table [items]="queries" [itemCount]="itemCount" [indexColumn]="false"
+                                        [pageLimits]="limits" [pagination]="true" [page]="1"
+                                        (rowClick)="rowClick($event)" [selectOnRowClick]="true" [header]="false"
+                                        [noDataMessage]="'No data to display!'" [multiSelect]="false"
+                                        [substituteRows]="false" (reload)="reloadItems($event)">
+
+                                        <data-table-column [property]="'issueType'" [visible]="true"
+                                            [header]="'Issue Type'" [sortable]="true" [resizable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="issueStatus" header="Issue Status"
+                                            [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="createdDate" header="Date Created"
+                                            [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column [property]="'createdDate'" [header]="'Actions'"
+                                            [resizable]="true">
+                                            <ng-template #dataTableHeader let-item="item">
+                                                <span>Action</span>
+                                            </ng-template>
+                                            <ng-template #dataTableCell let-item="item">
+                                                <button class="btn btn-primary btn-md btn-rounded"
+                                                    style="height: 32px;font-size: 14px;" data-toggle="modal"
+                                                    data-target="#viewQuery" (click)="openQuery(item)"
+                                                    data-dismiss="modal" type="button"> Open Query
+                                                    <span class="caret"></span>
+                                                </button>
+                                            </ng-template>
+                                        </data-table-column>
+                                    </data-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewQuery" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true " data-backdrop="static" data-keyboard="false">
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<div class="modal-dialog modal-lg" role="document ">
+    <div class="modal-content ">
+        <div class="modal-header" style="color : white; background : #0e4f76;">
+            <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                    aria-hidden="true"></i>
+                Query Details</h6>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="input-payment-city" class="control-label">Full Name</label>
+                    <input class="form-control" type="text" value="{{selectedQuery?.fullName}}" disabled
+                        style="height: 30px; border: none;">
+                </div>
+                <div class="col-sm-4">
+                    <label for="input-payment-city" class="control-label">Email</label>
+                    <input class="form-control" type="text" value="{{selectedQuery?.email}}" disabled
+                        style="height: 30px; border: none;">
+                </div>
+                <div class="col-sm-4">
+                    <label for="input-payment-city" class="control-label">Query Type</label>
+                    <input class="form-control" type="text" value="{{selectedQuery?.issueType}}" disabled
+                        style="height: 30px; border: none;">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="input-payment-city" class="control-label">User Type</label>
+                    <input class="form-control" type="text" value="{{selectedQuery?.userType}}" disabled
+                        style="height: 30px; border: none;">
+                </div>
+                <div class="col-sm-8">
+                    <label for="input-payment-city" class="control-label">Description</label>
+                    <textarea formControlName="description" rows="4" disabled
+                        value="{{selectedQuery?.description}}" class="form-control checking-field"
+                        placeholder="Issue Description"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <label for="input-payment-city" class="control-label">Close Comments</label>
+                    <textarea formControlName="comments" rows="4" disabled
+                        value="{{selectedQuery?.resolvedComments}}" class="form-control checking-field"
+                        placeholder="Query Comments"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer ">
+            <button type="button" class="btn btn-main " data-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
+</div>

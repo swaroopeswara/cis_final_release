@@ -1,0 +1,137 @@
+<div *ngIf="dashboardJson" class="row">
+    <div *ngIf="userType == 'INTERNAL' && this.dashboardJson.dashboard.internalrole.uam.monthlycount == 'Y'"
+        class="col-xl-2 col-lg-4 col-md-4 col-sm-6 bottom-30">
+        <div data-toggle="modal" data-target="#showCounts" data-dismiss="modal" class="card small-info-box"
+            style="background-color: #243a79;">
+            <div class="media">
+                <span class="media-left">
+                    <i class="fa fa-users"></i>
+                </span>
+                <div class="media-body text-right">
+                    <h6 style="font-size: 13px;" class="media-heading no-margin">Registered Users (Monthly)</h6>
+                    <span>{{countsJson.monthcount}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="userType == 'INTERNAL'  && this.dashboardJson.dashboard.internalrole.uam.weeklycount == 'Y'"
+        class="col-xl-2 col-lg-4 col-md-4 col-sm-6 bottom-30">
+        <div data-toggle="modal" data-target="#showCountsWeekly" data-dismiss="modal" class="card small-info-box"
+            style="background-color: #243a79;">
+            <div class="media">
+                <span class="media-left">
+                    <i class="fa fa-users"></i>
+                </span>
+                <div class="media-body text-right">
+                    <h6 style="font-size: 13px;" class="media-heading no-margin">Registered Users (Weekly)</h6>
+                    <span>{{countsJson.weekcount}}</span>
+                    <!-- <button (click)="updateRole('devi')" class="button">Click</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="userType == 'INTERNAL'"
+        class="col-xl-2 col-lg-4 col-md-4 col-sm-6 bottom-30">
+        <div class="card small-info-box"
+            style="background-color: #243a79;">
+            <div class="media">
+                <span style="font-size: 25px;" class="media-left">
+                    R
+                </span> 
+                <div class="media-body text-right">
+                    <h6 style="font-size: 13px;" class="media-heading no-margin">Invoices Total (Monthly)</h6>
+                    <span>{{monthPaidInfo}}</span>
+                    <!-- <button (click)="updateRole('devi')" class="button">Click</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="userType == 'INTERNAL'"
+        class="col-xl-2 col-lg-4 col-md-4 col-sm-6 bottom-30">
+        <div class="card small-info-box"
+            style="background-color: #243a79;">
+            <div class="media">
+                <span style="font-size: 25px;" class="media-left">
+                    R
+                </span>
+                <div class="media-body text-right">
+                    <h6 style="font-size: 13px;" class="media-heading no-margin">Invoices Total (Weekly)</h6>
+                    <span>{{weekPaidInfo}}</span>
+                    <!-- <button (click)="updateRole('devi')" class="button">Click</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="showCounts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document ">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Statistics</h6>
+            </div>
+            <div class="modal-body">
+                <table class="table table-sm">
+                    <thead style="background-color:#f6f6f6;font-size: 14px;">
+                        <tr>
+                            <th>Province Name</th>
+                            <th>Monthly Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cou of countsJson.provinces">
+                            <td>
+                                {{cou.provincename}}
+                            </td>
+                            <td>{{cou.monthcount}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-previous" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="showCountsWeekly" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document ">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Statistics</h6>
+            </div>
+            <div class="modal-body">
+                <table class="table table-sm">
+                    <thead style="background-color:#f6f6f6;font-size: 14px;">
+                        <tr>
+                            <th>Province Name</th>
+                            <th>Weekly Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cou of countsJson.provinces">
+                            <td>
+                                {{cou.provincename}}
+                            </td>
+                            <td>{{cou.weekcount}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-previous" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

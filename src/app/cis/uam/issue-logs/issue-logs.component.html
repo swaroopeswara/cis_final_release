@@ -1,0 +1,193 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30" style="text-align: right;">
+                            <button (click)="getAllIssueLogs()" class="btn btn-primary btn-sm" type="button"><i
+                                    class="fa fa-refresh"></i> Refresh</button>
+                        </div>
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#ta"><i
+                                                class="fa fa-files-o"></i>
+                                            All Query Logs</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="ta">
+                                    <data-table [items]="issuelogs" [itemCount]="itemCount" [indexColumn]="false"
+                                        [pageLimits]="limits" [pagination]="true" [page]="1"
+                                        (rowClick)="rowClick($event)" [selectOnRowClick]="true" [header]="false"
+                                        [noDataMessage]="'No data to display!'" [multiSelect]="false"
+                                        [substituteRows]="false" (reload)="reloadItems($event)">
+
+                                        <data-table-column [property]="'issueId'" [visible]="true" [header]="'Issue Id'"
+                                            [sortable]="true" [resizable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="fullName" header="Name" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="email" header="Email" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="issueType" header="Issue Type" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column [property]="'issueStatus'" [header]="'Status'"
+                                            [sortable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <span *ngIf="item.issueStatus == 'OPEN'"
+                                                    class="badge badge-warning">Open</span>
+                                                <span *ngIf="item.issueStatus == 'CLOSED'"
+                                                    class="badge badge-success">Closed</span>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <data-table-column [property]="'I4gRfqCode'" [header]="'Actions'"
+                                            [resizable]="true">
+                                            <ng-template #dataTableHeader let-item="item">
+                                                <span>Action</span>
+                                            </ng-template>
+                                            <ng-template #dataTableCell let-item="item">
+                                                <button class="btn btn-outline-primary btn-md dropdown-toggle"
+                                                    style="height: 32px;font-size: 14px;" type="button"
+                                                    data-toggle="dropdown">Actions
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <div class="action-dropdown">
+                                                    <ul class="dropdown-menu"
+                                                        style="font-size: 14px;border-color: rgb(109, 111, 183);">
+                                                        <li>
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#viewIssue" (click)="getIssueInfo(item)"
+                                                                data-dismiss="modal">
+                                                                <i class="fa fa-info-circle " style="color:grey"></i>
+                                                                More Info
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.issueStatus == 'OPEN'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#openComments"
+                                                                (click)="selectIssueLog(item)" data-dismiss="modal">
+                                                                <i class="fa fa-times-circle " style="color:grey"></i>
+                                                                Close Issue
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.issueStatus == 'CLOSED'">
+                                                            <a class="dropdown-item"
+                                                                (click)="issueLogUpdateStatus(item, 'OPEN')">
+                                                                <i class="fa fa-times-circle " style="color:grey"></i>
+                                                                Open Issue
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </ng-template>
+                                        </data-table-column>
+                                    </data-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="viewIssue" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document ">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Requests Details</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="input-payment-city" class="control-label">Full Name</label>
+                        <input class="form-control" type="text" value="{{selectedIssueLog.fullName}}" disabled
+                            style="height: 30px; border: none;">
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="input-payment-city" class="control-label">Email</label>
+                        <input class="form-control" type="text" value="{{selectedIssueLog.email}}" disabled
+                            style="height: 30px; border: none;">
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="input-payment-city" class="control-label">Query Type</label>
+                        <input class="form-control" type="text" value="{{selectedIssueLog.issueType}}" disabled
+                            style="height: 30px; border: none;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="input-payment-city" class="control-label">User Type</label>
+                        <input class="form-control" type="text" value="{{selectedIssueLog.userType}}" disabled
+                            style="height: 30px; border: none;">
+                    </div>
+                    <div *ngIf="provinceName?.length > 0" class="col-sm-4">
+                        <label for="input-payment-city" class="control-label">Province</label>
+                        <input class="form-control" type="text" value="{{provinceName}}" disabled
+                            style="height: 30px; border: none;">
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="input-payment-city" class="control-label">Description</label>
+                        <textarea formControlName="description" rows="4" disabled
+                            value="{{selectedIssueLog.description}}" class="form-control checking-field"
+                            placeholder="Issue Description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-main " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="openComments" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document ">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Comments</h6>
+            </div>
+            <div class="modal-body">
+                <form class="row" [formGroup]="issueForm">
+                    <div class="col-sm-12">
+                        <label for="input-payment-city" class="control-label">Comments</label>
+                        <textarea formControlName="comments" rows="4" class="form-control checking-field"></textarea>
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && issueForm.get('comments').hasError('required')">*
+                            required</span>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary"
+                    (click)="closeIssueLogUpdateStatus('CLOSED')">Submit</button>
+                <button type="button" id="btnCloseIssuePopup" class="btn btn-main" 
+                    data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

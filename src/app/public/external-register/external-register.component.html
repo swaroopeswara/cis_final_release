@@ -1,0 +1,559 @@
+<div class="login-container" style="background-image: url('../../../assets/img/c8.jpg');">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="col-xl-9 col-md-6 col-10 mx-auto">
+        <div class="card">
+            <div class="card-body widget-body ">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h2 class="card-title"><img src="../../../assets/img/logo/drdlr-logo.png" alt=""></h2>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div *ngFor="let step of steps; let last = last" class="col-md-4 col-sm-6 col-12 step"
+                                [class.active]="step.active" [class.valid]="step.valid" [ngClass]="{'last' : last }">
+                                <div class="step-icon">
+                                    <i class="fa {{ step.icon }}" aria-hidden="true"></i>
+                                </div>
+                                <span class="step-name" [class.active]="step.active"
+                                    [class.valid]="step.valid">{{step.name}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngFor="let step of steps" [hidden]="!step.active" class="col form-wizard">
+                    <div class="row form-title">
+                        <h4><i class="fa {{ step.icon }}"></i> {{step.name}}</h4>
+                    </div>
+
+                    <form *ngIf="step.name=='Role Information'" [formGroup]="roleForm" class="row">
+
+                        <div class="form-group col-md-6 mb-3">
+
+                        </div>
+                        <div class="form-group col-md-6 mb-3">
+
+                        </div>
+                        <div class="form-group col-md-3 mb-3"
+                            [ngClass]="{'has-danger' : step.hasError && roleForm.get('role').hasError('required'), 'has-success' : !roleForm.get('role').hasError('required') }">
+                            <label class="form-control-label">Primary Province</label>
+                            <!-- <div>
+                                <ss-multiselect-dropdown [options]="firstControlOptions" formControlName="province" [texts]="firstControlTexts" [(ngModel)]="firstControlModel" (ngModelChange)="onChange()"></ss-multiselect-dropdown>
+                            </div> -->
+                            <select formControlName="province" class="form-control"
+                                [ngClass]="{'form-control-danger' : step.hasError && roleForm.get('province').hasError('required'), 'form-control-success' : !roleForm.get('province').hasError('required') }">
+                                <option value="{{t.code}}={{t.name}}" *ngFor="let t of provinces">{{t.name}}</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('province').hasError('required')">*
+                                required</span>
+                        </div>
+                        <div class="form-group col-md-6 mb-3">
+
+                        </div>
+                        <div class="form-group col-md-6 mb-3"
+                            [ngClass]="{'has-danger' : step.hasError && roleForm.get('role').hasError('required'), 'has-success' : !roleForm.get('role').hasError('required') }">
+                            <label class="form-control-label">Select Role</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-user-o"></i></span>
+                                </div>
+                                <select formControlName="role" class="form-control" (change)="changeRole($event.target)"
+                                    [ngClass]="{'form-control-danger' : step.hasError && roleForm.get('role').hasError('required'), 'form-control-success' : !roleForm.get('role').hasError('required') }">
+                                    <option value="{{t.rolecode}}={{t.rolename}}={{t.needapproval}}"
+                                        *ngFor="let t of roles">{{t.rolename}}</option>
+                                </select>
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('role').hasError('required')">*
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('register').hasError('pattern')">Registration is
+                                disabled for this Role. Please contact admin@drdlr.gov.za to get more Information</span>
+                        </div>
+
+                        <div *ngIf="roleForm.get('role').value.split('=')[0] == 'EX011' || roleForm.get('role').value.split('=')[0] == 'EX010'"
+                            class="form-group col-md-6"
+                            [ngClass]="{'has-danger' : (step.hasError && roleForm.get('ppn').hasError('required')) || (step.hasError && roleForm.get('ppn').hasError('minlength')), 
+                                                                         'has-success' : !roleForm.get('ppn').hasError('required') && !roleForm.get('ppn').hasError('minlength')}">
+                            <label class="form-control-label">Professional Practioner Number</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">GPR LS </span>
+                                </div>
+                                <input formControlName="ppn" maxlength="11" class="form-control"
+                                    [ngClass]="{'form-control-danger' : (step.hasError && roleForm.get('ppn').hasError('required')) || (step.hasError && roleForm.get('ppn').hasError('minlength')), 'form-control-success' : !roleForm.get('ppn').hasError('required') && !roleForm.get('ppn').hasError('minlength')}"
+                                    type="ppn">
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('ppn').hasError('required')"> *
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('ppn').hasError('minlength')">Minimum of 1
+                                characters</span>
+                            <span class="help-block text-danger" *ngIf="noPPNFound">*
+                                Pls user doesnt exist with this ppnno</span>
+                        </div>
+                        <div *ngIf="roleForm.get('role').value.split('=')[0] == 'EX002'" class="form-group col-md-6"
+                            [ngClass]="{'has-danger' : (step.hasError && roleForm.get('ppn').hasError('required')) || (step.hasError && roleForm.get('ppn').hasError('minlength')), 
+                                                                         'has-success' : !roleForm.get('ppn').hasError('required') && !roleForm.get('ppn').hasError('minlength')}">
+                            <label class="form-control-label">Professional Practioner Number</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">PRaRCHT </span>
+                                </div>
+                                <input formControlName="ppn" maxlength="11" class="form-control"
+                                    [ngClass]="{'form-control-danger' : (step.hasError && roleForm.get('ppn').hasError('required')) || (step.hasError && roleForm.get('ppn').hasError('minlength')), 'form-control-success' : !roleForm.get('ppn').hasError('required') && !roleForm.get('ppn').hasError('minlength')}"
+                                    type="ppn">
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('ppn').hasError('required')"> *
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('ppn').hasError('minlength')">Minimum of 1
+                                characters</span>
+                            <span class="help-block text-danger" *ngIf="noPPNFound">*
+                                Pls user doesnt exist with this ppnno</span>
+                        </div>
+                        <div *ngIf="roleForm.get('role').value.split('=')[0] == 'EX011' || roleForm.get('role').value.split('=')[0] == 'EX002' || roleForm.get('role').value.split('=')[0] == 'EX010'"
+                            class="form-group col-md-6"
+                            [ngClass]="{'has-danger' : (step.hasError && roleForm.get('nameofpractise').hasError('required')) || (step.hasError && roleForm.get('nameofpractise').hasError('minlength')), 
+                                                                         'has-success' : !roleForm.get('nameofpractise').hasError('required') && !roleForm.get('nameofpractise').hasError('minlength')}">
+                            <label class="form-control-label">Name of Practise</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-star"></i></span>
+                                </div>
+                                <input formControlName="nameofpractise" maxlength="512" class="form-control"
+                                    [ngClass]="{'form-control-danger' : (step.hasError && roleForm.get('nameofpractise').hasError('required')) || (step.hasError && roleForm.get('nameofpractise').hasError('minlength')), 'form-control-success' : !roleForm.get('nameofpractise').hasError('required') && !roleForm.get('nameofpractise').hasError('minlength')}"
+                                    type="text">
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('nameofpractise').hasError('required')"> *
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('nameofpractise').hasError('minlength')">Minimum of
+                                5
+                                characters</span>
+                        </div>
+                        <div class="form-group col-md-6"
+                            [ngClass]="{'has-danger' : (step.hasError && personalForm.get('email').hasError('required')) || (step.hasError && personalForm.get('email').hasError('invalidEmail')), 
+                                                                         'has-success' : !personalForm.get('email').hasError('required') && !personalForm.get('email').hasError('invalidEmail')}">
+                            <label class="form-control-label">Contact email</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                </div>
+                                <input formControlName="email" maxlength="255" class="form-control"
+                                    [ngClass]="{'form-control-danger' : (step.hasError && personalForm.get('email').hasError('required')) || (step.hasError && personalForm.get('email').hasError('invalidEmail')), 
+                                                                                                    'form-control-success' :  !personalForm.get('email').hasError('required') && !personalForm.get('email').hasError('invalidEmail')}"
+                                    type="text">
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('email').hasError('required')">Email is
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('email').hasError('invalidEmail')">Invalid
+                                email address</span>
+                            <span class="help-block text-danger" *ngIf="step.hasError && emailExists">Account already
+                                exists with this email.</span>
+                        </div>
+                        <div *ngIf="roleForm.get('role').value.split('=')[0] == 'EX002' || roleForm.get('role').value.split('=')[0] == 'EX010'"
+                            class="form-group col-md-6"
+                            [ngClass]="{'has-danger' : (step.hasError && roleForm.get('companydoc').hasError('required')), 
+                                                                     'has-success' : !roleForm.get('companydoc').hasError('required')}">
+                            <label for="input-payment-city" class="control-label">Registration Document</label>
+                            <div class="input-group file-upload">
+                                <input type="file" (change)="selectFile(inputfile1)" #inputfile1
+                                    class="file-upload-btn" />
+                                <input type="text" class="form-control col-sm-6" style="font-size: 12px;"
+                                    value="{{fileName}}">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" style="font-size: 16px;" type="button"><i
+                                            class="fa fa-folder-open-o" aria-hidden="true"></i> Browse..</button>
+                                </span>
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && roleForm.get('companydoc').hasError('required')">*
+                                required</span>
+                        </div>
+                    </form>
+
+                    <form *ngIf="step.name=='Personal Information'" [formGroup]="personalForm" class="row">
+                        <div class="form-group col-md-2">
+                            <label class="form-control-label">Title</label>
+                            <select formControlName="salutation" class="form-control">
+                                <option>Mr</option>
+                                <option>Mrs</option>
+                                <option>Dr</option>
+                                <option>Miss</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('salutation').hasError('required')">*
+                                required</span>
+                        </div>
+
+                        <div class="form-group col-md-4"
+                            [ngClass]="{'has-danger' : step.hasError && personalForm.get('firstname').hasError('required'), 'has-success' : !personalForm.get('firstname').hasError('required') }">
+                            <label class="form-control-label">First Name</label>
+                            <input formControlName="firstname" maxlength="100" class="form-control"
+                                [ngClass]="{'form-control-danger' :  personalForm.get('firstname').hasError('required'), 'form-control-success' :  !personalForm.get('firstname').hasError('required') }"
+                                type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('firstname').hasError('required')">*
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('firstname').hasError('minlength')">Minimum of
+                                2
+                                characters</span>
+                        </div>
+
+                        <div class="form-group col-md-3"
+                            [ngClass]="{'has-danger' : step.hasError && personalForm.get('lastname').hasError('required'), 'has-success' : !personalForm.get('lastname').hasError('required') }">
+                            <label class="form-control-label">Last Name</label>
+                            <input formControlName="lastname" maxlength="100" class="form-control"
+                                [ngClass]="{'form-control-danger' :  personalForm.get('lastname').hasError('required'), 'form-control-success' :  !personalForm.get('lastname').hasError('required') }"
+                                type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('lastname').hasError('required')">*
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('lastname').hasError('minlength')">Minimum of 2
+                                characters</span>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label class="form-control-label">Organization Type</label>
+                            <select formControlName="orgtype" class="form-control">
+                                <option value="{{t.organizationTypeCode}}={{t.organizationTypeName}}"
+                                    *ngFor="let t of organizationTypes">{{t.organizationTypeName}}</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('orgtype').hasError('required')">*
+                                required</span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="form-control-label">Sector</label>
+                            <select formControlName="sector" class="form-control">
+                                <option value="{{t.code}}={{t.name}}" *ngFor="let t of sectors">{{t.name}}</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('sector').hasError('required')">*
+                                required</span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="form-control-label">Mobile</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-mobile-phone"></i></span>
+                                </div>
+                                <input formControlName="mobile" maxlength="20" class="form-control" type="text">
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('mobile').hasError('required')">*
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('mobile').hasError('pattern')">*
+                                enter valid mobile number</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('mobile').hasError('minlength')">Minimum of 10
+                                characters</span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="form-control-label">Telephone No</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                                </div>
+                                <input formControlName="telephone" maxlength="20" class="form-control"
+                                    [ngClass]="{'form-control-danger' :  personalForm.get('telephone').hasError('required'), 'form-control-success' :  !personalForm.get('telephone').hasError('required') }"
+                                    type="text">
+                            </div>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('telephone').hasError('pattern')">Must be
+                                numeric</span>
+
+                        </div>
+
+                        <div class="form-group col-md-4"
+                            [ngClass]="{'has-danger' : step.hasError && personalForm.get('addressline1').hasError('required'), 'has-success' : !personalForm.get('addressline1').hasError('required') }">
+                            <label class="form-control-label">Address Line 1</label>
+                            <input formControlName="addressline1" maxlength="255" class="form-control"
+                                [ngClass]="{'form-control-danger' :  personalForm.get('addressline1').hasError('required'), 'form-control-success' :  !personalForm.get('addressline1').hasError('required') }"
+                                type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('addressline1').hasError('required')">*
+                                required</span>
+                        </div>
+
+                        <div class="form-group col-md-4"
+                            [ngClass]="{'has-danger' : step.hasError && personalForm.get('addressline2').hasError('required'), 'has-success' : !personalForm.get('addressline2').hasError('required') }">
+                            <label class="form-control-label">Address Line 2</label>
+                            <input formControlName="addressline2" maxlength="255" class="form-control"
+                                [ngClass]="{'form-control-danger' :  personalForm.get('addressline2').hasError('required'), 'form-control-success' :  !personalForm.get('addressline2').hasError('required') }"
+                                type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('addressline2').hasError('required')">*
+                                required</span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="form-control-label">Address Line 3</label>
+                            <input formControlName="addressline3" maxlength="255" class="form-control" type="text">
+                        </div>
+                        <div class="form-group col-md-2"
+                            [ngClass]="{'has-danger' : step.hasError && personalForm.get('zipcode').hasError('required'), 'has-success' : !personalForm.get('zipcode').hasError('required') }">
+                            <label class="form-control-label">Postal Code</label>
+                            <input formControlName="zipcode" maxlength="255" class="form-control"
+                                [ngClass]="{'form-control-danger' :  personalForm.get('zipcode').hasError('required'), 'form-control-success' :  !personalForm.get('zipcode').hasError('required') }"
+                                type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('zipcode').hasError('required')">required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('zipcode').hasError('pattern')">Must be
+                                numeric</span>
+                        </div>
+
+                        <!-- <div class="form-group col-md-6">
+                            <label class="form-control-label">Provinces</label>
+                            <div>
+                                <ss-multiselect-dropdown [options]="firstControlOptions" formControlName="province"
+                                    [texts]="firstControlTexts" 
+                                    [(ngModel)]="firstControlModel"></ss-multiselect-dropdown>
+                            </div>
+
+                            <span class="help-block text-danger"
+                                *ngIf="step.hasError && personalForm.get('province').hasError('required')">*
+                                required</span>
+                        </div> -->
+
+                        <!-- <div class="form-group col-md-6">
+                            <label class="form-control-label">Provinces</label>
+                            <div>
+                                <ss-multiselect-dropdown [options]="firstControlOptions" formControlName="province"
+                                    [(ngModel)]="firstControlModel" [texts]="firstControlTexts"
+                                    (ngModelChange)="onChange()"></ss-multiselect-dropdown>
+                            </div>
+                            <span class="help-block text-danger"
+                                ngIf="step.hasError && personalForm.get('province').hasError('required')">
+                                required</span>
+                        </div> -->
+                    </form>
+
+                    <form *ngIf="step.name=='More Details'" [formGroup]="moredetailsForm" class="row">
+                        <div class="form-group col-md-4">
+                            <label class="form-control-label">Preferred Mode of Communication</label>
+                            <select formControlName="communication" class="form-control">
+                                <option value="{{t.communicationTypeCode}}={{t.communicationTypeName}}"
+                                    *ngFor="let t of communcationTypes">{{t.communicationTypeName}}</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('communication').hasError('required')">*
+                                required</span>
+                        </div>
+                        <div *ngIf="moredetailsForm.get('communication').value.split('=')[1] == 'Alternative Email'"
+                            class="form-group col-md-4">
+                            <label class="form-control-label">Alternative Email</label>
+                            <input formControlName="alternativeemail" maxlength="255" class="form-control"
+                                [ngClass]="{'form-control-danger' :  moredetailsForm.get('alternativeemail').hasError('required'), 'form-control-success' :  !moredetailsForm.get('alternativeemail').hasError('required') }"
+                                type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('alternativeemail').hasError('required')">*
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('alternativeemail').hasError('invalidEmail')">Invalid
+                                email address</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                        </div>
+
+                        <div class="form-group col-md-5"
+                            [ngClass]="{'has-danger' : hasError && moredetailsForm.get('secq1').hasError('required'), 'has-success' : !moredetailsForm.get('secq1').hasError('required') }">
+                            <label class="form-control-label">Security Question 1</label>
+                            <select formControlName="secq1" (change)="selectQuestion()" class="form-control">
+                                <option value="{{t.securityquestionCode}}={{t.securityquestion}}"
+                                    *ngFor="let t of securityQuestions">
+                                    {{t.securityquestion}}</option>
+                            </select>
+                            <!-- <input formControlName="secq1" maxlength="255" class="form-control"
+                                [ngClass]="{'form-control-danger' :  moredetailsForm.get('secq1').hasError('required'), 'form-control-success' :  !moredetailsForm.get('secq1').hasError('required') }"
+                                type="text"> -->
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('secq1').hasError('required')">* required</span>
+                            <span class="help-block text-danger" *ngIf="hasQuestionError">Duplicates questions. Please
+                                select unique questions.</span>
+
+                        </div>
+                        <div class="form-group col-md-3"
+                            [ngClass]="{'has-danger' : hasError && moredetailsForm.get('ans1').hasError('required'), 'has-success' : !moredetailsForm.get('ans1').hasError('required') }">
+                            <label class="form-control-label">Answer 1</label>
+                            <input formControlName="ans1" maxlength="255" class="form-control"
+                                [ngClass]="{'form-control-danger' :  moredetailsForm.get('ans1').hasError('required'), 'form-control-success' :  !moredetailsForm.get('ans1').hasError('required') }"
+                                type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('ans1').hasError('required')">*
+                                required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('ans1').hasError('minlength')">Minimum of 2
+                                characters</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                        </div>
+
+                        <div class="form-group col-md-5"
+                            [ngClass]="{'has-danger' : hasError && moredetailsForm.get('secq2').hasError('required'), 'has-success' : !moredetailsForm.get('secq2').hasError('required') }">
+                            <label class="form-control-label">Security Question 2</label>
+                            <select formControlName="secq2" (change)="selectQuestion()" class="form-control">
+                                <option value="{{t.securityquestionCode}}={{t.securityquestion}}"
+                                    *ngFor="let t of securityQuestions">
+                                    {{t.securityquestion}}</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('secq2').hasError('required')">* required</span>
+                        </div>
+                        <div class="form-group col-md-3"
+                            [ngClass]="{'has-danger' : hasError && moredetailsForm.get('ans2').hasError('required'), 'has-success' : !moredetailsForm.get('ans2').hasError('required') }">
+                            <label class="form-control-label">Answer 2</label>
+                            <input formControlName="ans2" maxlength="255" class="form-control"
+                                [ngClass]="{'form-control-danger' :  moredetailsForm.get('ans2').hasError('required'), 'form-control-success' :  !moredetailsForm.get('ans2').hasError('required') }"
+                                type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('ans2').hasError('required')">* required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('ans2').hasError('minlength')">Minimum of 2
+                                characters</span>
+                        </div>
+                        <div class="form-group col-md-4">
+                        </div>
+
+                        <div class="form-group col-md-5"
+                            [ngClass]="{'has-danger' : hasError && moredetailsForm.get('secq3').hasError('required'), 'has-success' : !moredetailsForm.get('secq3').hasError('required') }">
+                            <label class="form-control-label">Security Question 3</label>
+                            <select formControlName="secq3" (change)="selectQuestion()" class="form-control">
+                                <option value="{{t.securityquestionCode}}={{t.securityquestion}}"
+                                    *ngFor="let t of securityQuestions">
+                                    {{t.securityquestion}}</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('secq3').hasError('required')">* required</span>
+                        </div>
+                        <div class="form-group col-md-3"
+                            [ngClass]="{'has-danger' : hasError && moredetailsForm.get('ans3').hasError('required'), 'has-success' : !moredetailsForm.get('ans3').hasError('required') }">
+                            <label class="form-control-label">Answer 3</label>
+                            <input formControlName="ans3" maxlength="255" class="form-control"
+                                [ngClass]="{'form-control-danger' :  moredetailsForm.get('ans3').hasError('required'), 'form-control-success' :  !moredetailsForm.get('ans3').hasError('required') }"
+                                type="text">
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('ans3').hasError('required')">* required</span>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && moredetailsForm.get('ans3').hasError('minlength')">Minimum of 2
+                                characters</span>
+                        </div>
+                        <!-- <div class="form-group col-md-4">
+                            <re-captcha (resolved)="resolved($event)" siteKey="{{captchakey}}"></re-captcha>
+                            <span *ngIf="hasError && captcha === false"
+                                style="font-family: Open Sans, sans-serif; font-size: 13px; " class="text-danger"><i
+                                    class="fa fa-times-circle">* required</i></span>
+                        </div> -->
+
+                        <div class="form-group col-md-4">
+                            <div class="abc-checkbox abc-checkbox-primary">
+                                <input id="checkbox3" formControlName="information" type="checkbox">
+                                <label for="checkbox3">Enable Information Notifications</label>
+                            </div>
+                            <div class="abc-checkbox abc-checkbox-primary">
+                                <input id="checkbox1" formControlName="news" type="checkbox">
+                                <label for="checkbox1">Enable News Notifications</label>
+                            </div>
+                            <div class="abc-checkbox abc-checkbox-primary">
+                                <input id="checkbox2" formControlName="events" type="checkbox">
+                                <label for="checkbox2">Enable Events Notifications</label>
+                            </div>
+                            <div class="abc-checkbox abc-checkbox-primary">
+                                <input id="checkbox4" (change)="changeTC()" formControlName="tc" type="checkbox">
+                                <label for="checkbox4">I agree with <a href="http://10.1.15.216/CIS-Portal/terms-and-conditions" target="_blank">Terms & Conditions</a></label>
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && moredetailsForm.get('tc').value == false">* required</span>
+                            </div>
+                        </div>
+                        <!-- <div class="form-group col-md-4">
+                            <label class="form-control-label">News</label>
+                            <input formControlName="news" class="form-control-checkbox-primary" type="checkbox" />
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="form-control-label">Events</label>
+                            <input formControlName="events" class="form-control-checkbox-primary" type="checkbox" />
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="form-control-label">Information</label>
+                            <input formControlName="information" class="form-control-checkbox-primary"
+                                type="checkbox" />
+                        </div> -->
+                    </form>
+                </div>
+
+                <hr>
+                <div class="row">
+                    <div class="col-12">
+                        <a *ngIf="this.steps[0].active" [routerLink]="['/login']"><button
+                                class="btn btn-primary pull-left"><i class="fa fa-arrow-left"></i>&nbsp; Back to
+                                Login</button></a>
+                        <button *ngIf="!this.steps[0].active" class="btn btn-primary pull-left" (click)="prev()"><i
+                                class="fa fa-chevron-left arrow"></i>&nbsp; Prev Step</button>
+                        <button *ngIf="!steps[steps.length-1].active" class="btn btn-primary pull-right"
+                            (click)="next()">Next Step &nbsp;<i class="fa fa-chevron-right arrow"></i></button>
+                        <button *ngIf="steps[steps.length-1].active" class="btn btn-primary pull-right"
+                            (click)="confirm()">Submit &nbsp;<i class="fa fa-check arrow"></i></button>
+                        <!-- <button id="uploadDocsPopup" [hidden]="false" type="button"
+                            class="btn btn-primary float-right btn-medium mr-1" data-toggle="modal"
+                            data-target="#uploadDocs"><i class="fa fa-floppy-o"></i>
+                            Show Upload</button> -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 
+<div id="uploadDocs" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width: 600px; background: #fff;">
+            <div class="modal-header" style="background-color: #0b4428; color: white;">
+                <h5 class="modal-title">Upload Practice/Company Supporting Docs</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="padding: 15px;" class="input-group file-upload">
+                        <input type="file" multiple (change)="fileupload(inputfile1)" #inputfile1 class="file-upload-btn" />
+                        <input type="text" style="background-color: white; border: 1px #e9e6e6 solid;"
+                            class="form-control" placeholder="Choose a file..." value="{{file}}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button"><i class="fa fa-folder-open-o"
+                                    aria-hidden="true"></i>
+                                Browse..</button>
+                        </span>
+                    </div>
+                    <div class="card" style="height: 150px; overflow-y: auto;">
+                        <div>
+                            <ul class="list-group" *ngFor="let docs of getdoclist">
+                                <li class="list-group-item">
+                                    <span>{{docs}}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->

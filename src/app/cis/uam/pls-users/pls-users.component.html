@@ -1,0 +1,472 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#in"><i
+                                                class="fa fa-users"></i>
+                                            Pls Users</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="in">
+
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-search"></i>
+                                                </span>
+                                                <input class="form-control custom-textbox" type="text"
+                                                    placeholder="Search" style="font-size: 13px;"
+                                                    (keyup)="updateFilter($event)" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3" style="text-align: right;">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#addUser" (click)="addPlsUser()" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add
+                                            </button>
+                                        </div>
+                                        <div class="form-group col-md-3" style="text-align: right;">
+                                            <button type="button" class="btn btn-primary" (click)="getAllPlsUsers()"><i
+                                                    class="fa fa-refresh"></i>
+                                                Refresh</button>
+                                        </div>
+                                    </div>
+                                    <data-table [items]="plsusers" [itemCount]="itemCount" [indexColumn]="false"
+                                        [pageLimits]="limits" [pagination]="true" [page]="1"
+                                        (rowClick)="rowClick($event)" [selectOnRowClick]="true" [header]="false"
+                                        [noDataMessage]="'No data to display!'" [multiSelect]="false"
+                                        [substituteRows]="false" (reload)="reloadItems($event)">
+
+                                        <data-table-column [property]="'plscode'" [visible]="true" [header]="'PLS Code'"
+                                            [sortable]="true" [resizable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="surname" header="Surname" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="initials" header="Initials" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column [property]="'postaladdress1'" [header]="'User Type'"
+                                            [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column [property]="'isActive'" [header]="'Active?'"
+                                            [sortable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <span *ngIf="item.isActive == 'Y'"
+                                                    class="badge badge-success">Yes</span>
+                                                <span *ngIf="item.isActive == 'N'" class="badge badge-danger">No</span>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <data-table-column [property]="'isValid'" [header]="'Valid?'"
+                                            [sortable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <span *ngIf="item.isValid == 'Y'"
+                                                    class="badge badge-success">Yes</span>
+                                                <span *ngIf="item.isValid == 'N'" class="badge badge-danger">No</span>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <data-table-column [property]="'I4gRfqCode'" [header]="'Actions'"
+                                            [resizable]="true">
+                                            <ng-template #dataTableHeader let-item="item">
+                                                <span>Action</span>
+                                            </ng-template>
+                                            <ng-template #dataTableCell let-item="item">
+                                                <button class="btn btn-outline-primary btn-md dropdown-toggle"
+                                                    style="height: 32px;font-size: 14px;" type="button"
+                                                    data-toggle="dropdown">Actions
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <div class="action-dropdown">
+                                                    <ul class="dropdown-menu"
+                                                        style="font-size: 14px;border-color: rgb(109, 111, 183);">
+                                                        <li>
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#viewUser" (click)="selectPlsUser(item)"
+                                                                data-dismiss="modal">
+                                                                <i class="fa fa-user" style="color:grey"></i> User Info
+                                                            </a>
+                                                        </li>
+                                                        <!-- <li *ngIf="item.isActive == 'Y'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                (click)="selectPlsUser(item)"
+                                                                data-target="#deactivateUserModal" data-dismiss="modal">
+                                                                <i class="fa fa-lock" style="color:grey"></i>
+                                                                Deactivate User
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.isActive == 'N'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                (click)="selectPlsUser(item)"
+                                                                data-target="#deactivateUserModal" data-dismiss="modal">
+                                                                <i class="fa fa-lock" style="color:grey"></i>
+                                                                Activate User
+                                                            </a>
+                                                        </li> 
+                                                        <li>
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                (click)="selectPlsUser(item)"
+                                                                data-target="#deleteUserModal" data-dismiss="modal">
+                                                                <i class="fa fa-times-circle" style="color:red"></i>
+                                                                Delete User
+                                                            </a>
+                                                        </li> -->
+                                                    </ul>
+                                                </div>
+                                            </ng-template>
+                                        </data-table-column>
+                                    </data-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewUser" tabindex="-1" role="dialog" aria-labelledby="modal-large-label"
+    style="display: none;">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header state modal-primary" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Update User</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <form class="row" [formGroup]="plsForm">
+                    <div class="form-group col-md-2">
+                        <label class="form-control-label">PLS Code</label>
+                        <input disabled formControlName="plscode" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && plsForm.get('plscode').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-control-label">Surname</label>
+                        <input formControlName="surname" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Initials</label>
+                        <input formControlName="initials" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">User Type</label>
+                        <input formControlName="plsusertype" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && plsForm.get('plsusertype').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Postal Address 1</label>
+                        <input formControlName="postaladdress2" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Postal Address 2 </label>
+                        <input formControlName="postaladdress3" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Postal Address 3</label>
+                        <input formControlName="postaladdress4" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Postal Code</label>
+                        <input formControlName="postalcode" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Telephone No</label>
+                        <input formControlName="telephoneno" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Mobile no</label>
+                        <input formControlName="cellphoneno" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && plsForm.get('cellphoneno').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Fax No</label>
+                        <input formControlName="faxno" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Courier Service</label>
+                        <input formControlName="courierservice" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Restricted Indicator </label>
+                        <input formControlName="restictedind" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Sectional Plan Indicator</label>
+                        <select formControlName="sectionalplanind" class="form-control">
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Email</label>
+                        <input formControlName="email" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && plsForm.get('email').hasError('required')">*
+                            required</span>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Province Code</label>
+                        <input formControlName="provcode" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="form-control-label">General Notes</label>
+                        <textarea formControlName="generalnotes" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="textarea"></textarea>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="form-control-label">Description</label>
+                        <textarea formControlName="description" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="textarea"></textarea>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Created User</label>
+                        <input formControlName="createduser" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Modified User</label>
+                        <input formControlName="modifieduser" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Surveyor Id</label>
+                        <input formControlName="surveyorid" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">SG Office Id</label>
+                        <input formControlName="sgofficeid" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">is Active?</label>
+                        <select formControlName="isActive" class="form-control">
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">is Valid?</label>
+                        <select formControlName="isValid" class="form-control">
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="updatePlsUser()">Save</button>
+                <button type="button" id="btnUpdatePlsUserPopup" class="btn btn-default"
+                    data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addUser" tabindex="-1" role="dialog" aria-labelledby="modal-large-label"
+    style="display: none;">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header state modal-primary" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Add User</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <form class="row" [formGroup]="plsForm">
+                    <div class="form-group col-md-2">
+                        <label class="form-control-label">PLS Code</label>
+                        <input formControlName="plscode" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && plsForm.get('plscode').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-control-label">Surname</label>
+                        <input formControlName="surname" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Initials</label>
+                        <input formControlName="initials" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">User Type</label>
+                        <input formControlName="plsusertype" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && plsForm.get('plsusertype').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Postal Address 1</label>
+                        <input formControlName="postaladdress2" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Postal Address 2 </label>
+                        <input formControlName="postaladdress3" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Postal Address 3</label>
+                        <input formControlName="postaladdress4" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Postal Code</label>
+                        <input formControlName="postalcode" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Telephone No</label>
+                        <input formControlName="telephoneno" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Mobile no</label>
+                        <input formControlName="cellphoneno" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && plsForm.get('cellphoneno').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Fax No</label>
+                        <input formControlName="faxno" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Courier Service</label>
+                        <input formControlName="courierservice" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Restricted Indicator </label>
+                        <input formControlName="restictedind" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Sectional Plan Indicator</label>
+                        <select formControlName="sectionalplanind" class="form-control">
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Email</label>
+                        <input formControlName="email" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && plsForm.get('email').hasError('required')">*
+                            required</span>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Province Code</label>
+                        <input formControlName="provcode" style="font-size: 12px;" maxlength="255" class="form-control"
+                            type="text">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="form-control-label">General Notes</label>
+                        <textarea formControlName="generalnotes" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="textarea"></textarea>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="form-control-label">Description</label>
+                        <textarea formControlName="description" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="textarea"></textarea>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Created User</label>
+                        <input formControlName="createduser" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Modified User</label>
+                        <input formControlName="modifieduser" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Surveyor Id</label>
+                        <input formControlName="surveyorid" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">SG Office Id</label>
+                        <input formControlName="sgofficeid" style="font-size: 12px;" maxlength="255"
+                            class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">is Active?</label>
+                        <select formControlName="isActive" class="form-control">
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">is Valid?</label>
+                        <select formControlName="isValid" class="form-control">
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="savePlsUser()">Save</button>
+                <button type="button" id="btnSavePlsUserPopup" class="btn btn-default"
+                    data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

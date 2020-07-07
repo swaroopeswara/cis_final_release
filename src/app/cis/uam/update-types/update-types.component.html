@@ -1,0 +1,295 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#ta"><i
+                                                class="fa fa-th "></i>
+                                            Communication Types</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#sectors"><i class="fa fa-th  "></i>
+                                            Sectors </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#orgtypes"><i
+                                                class="fa fa-th  "></i>
+                                            Organization Types </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="ta">
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#createCommType" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add
+                                            </button>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <table class="table table-sm">
+                                                <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Communication Mode</th>
+                                                        <th>Remove</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let comm of communcationTypes">
+                                                        <td>
+                                                            {{comm.communicationTypeCode}}
+                                                        </td>
+                                                        <td>{{comm.communicationTypeName}}</td>
+                                                        <td>
+                                                                <button type="button" (click)="selectType(comm.communicationTypeCode, comm.communicationTypeName, 'CT')"
+                                                                    style=" border:none; background-color: red;" data-toggle="modal"
+                                                                    class="btn btn-outline-warning" data-target="#deleteTypeModal" data-dismiss="modal">
+                                                                    <i style="color:white;" class="fa fa-close"></i>
+                                                                </button>
+                                                            </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="sectors">
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#createSector" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add
+                                            </button>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <table class="table table-sm">
+                                                <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Sector Name</th>
+                                                        <th>Remove</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let comm of sectors">
+                                                        <td>
+                                                            {{comm.code}}
+                                                        </td>
+                                                        <td>{{comm.name}}</td>
+                                                        <td>
+                                                                <button type="button" (click)="selectType(comm.code, comm.name, 'S')"
+                                                                    style=" border:none; background-color: red;" data-toggle="modal"
+                                                                    class="btn btn-outline-warning" data-target="#deleteTypeModal" data-dismiss="modal">
+                                                                    <i style="color:white;" class="fa fa-close"></i>
+                                                                </button>
+                                                            </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="orgtypes">
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#createOrgtype" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add
+                                            </button>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <table class="table table-sm">
+                                                <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Sector Name</th>
+                                                        <th>Remove</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let comm of organizationTypes">
+                                                        <td>
+                                                            {{comm.organizationTypeCode}}
+                                                        </td>
+                                                        <td>{{comm.organizationTypeName}}</td>
+                                                        <td>
+                                                                <button type="button" (click)="selectType(comm.organizationTypeCode, comm.organizationTypeName, 'O')"
+                                                                style=" border:none; background-color: red;" data-toggle="modal"
+                                                                class="btn btn-outline-warning" data-target="#deleteTypeModal" data-dismiss="modal">
+                                                                <i style="color:white;" class="fa fa-close"></i>
+                                                            </button>
+                                                            </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createCommType" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+                <p style="font-size: 20px; color: white">Loading...</p>
+            </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Communication Mode</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="commTypeForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="commname" type="text" class="form-control" name="otp"
+                                    placeholder="Mode Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && commTypeForm.get('commname').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateCommValue">* already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control" name="otp"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createCommType()">Save</button>
+                    <button type="button" id="btnCreateCommClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createSector" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+                <p style="font-size: 20px; color: white">Loading...</p>
+            </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Sector</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="sectorForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="sectorname" type="text" class="form-control" name="otp"
+                                    placeholder="Sector Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && sectorForm.get('sectorname').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateSectorValue">* already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control" name="otp"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createSector()">Save</button>
+                    <button type="button" id="btnCreateSectorPopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createOrgtype" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+                <p style="font-size: 20px; color: white">Loading...</p>
+            </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Sector</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="orgTypeForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="orgtypename" type="text" class="form-control" name="otp"
+                                    placeholder="Org Type Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && orgTypeForm.get('orgtypename').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateOrgValue">* already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control" name="otp"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createOrgType()">Save</button>
+                    <button type="button" id="btnCreateOrgTypePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="deleteTypeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 15px;" class="col-lg-12">
+                        Are you sure you want to delete ?
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning"
+                    (click)="deleteType()">Yes</button>
+                <button type="button" id="btnDeleteTypePopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

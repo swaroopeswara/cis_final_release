@@ -1,0 +1,101 @@
+<div class="login-container" style="background-image: url('../../../assets/img/c8.jpg');">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="col-xl-4 col-md-6 col-10 mx-auto">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2 class="card-title"><img src="../../../assets/img/logo/drdlr-logo.png" alt=""></h2>
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class=" text-left">
+                    <div class="form-group">
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input id="radio1" type="radio" name="radioInline" (change)="onItemChange('Yes')"
+                                class="custom-control-input radio-warning">
+                            <label class="custom-control-label" for="radio1">Internal User</label>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-inline">
+                            <input id="radio2" type="radio" name="radioInline" (change)="onItemChange('No')"
+                                class="custom-control-input radio-warning">
+                            <label class="custom-control-label" for="radio2">External User</label>
+                        </div>
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && loginForm.get('internal').hasError('required')">* required</span>
+                    </div>
+                    <div class="form-group">
+                        <input [formControl]="email" maxlength="255" class="form-control checking-field"
+                            placeholder="{{phUsername}}" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && loginForm.get('email').hasError('required')">Email is
+                            required</span>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input [formControl]="password" id="show_hide_password" maxlength="60" class="form-control"
+                                placeholder="{{phPassword}}" type="password">
+                            <div (click)="showHidePassword()" style="border: 1px solid #cec7c7; background-color: white;" class="input-group-addon">
+                                <a><i id="iconk" style="color: #8787e7;"  class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                            </div>
+                        </div>
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && loginForm.get('password').hasError('required')">Password
+                            is required</span>
+                        <span class="help-block text-danger"
+                            *ngIf="loginForm.get('password').touched && loginForm.get('password').hasError('minlength')">Password
+                            isn't long enough, minimum of 6 characters</span>
+                        <span class="help-block text-danger" *ngIf="invalidLogin">Invalid Login Credentials.</span>
+                        <span class="help-block text-danger" *ngIf="accountStatus == 'WAITING'">You account is not
+                            approved by Surveyor
+                            yet. Please contact your Surveyor</span>
+                        <span class="help-block text-danger" *ngIf="accountStatus == 'REJECTED'">You account is
+                            rejected.
+                            Please contact admin@drdlr.gov.za</span>
+                        <span class="help-block text-danger" *ngIf="accountStatus == 'PENDING'">You account is approval
+                            pending.
+                            Please contact admin@drdlr.gov.za</span>
+                        <span class="help-block text-danger" *ngIf="accountStatus == 'INACTIVE'">You account is not
+                            active. Please contact admin@drdlr.gov.za.
+                        </span>
+                        <span class="help-block text-danger" *ngIf="accountStatus == 'NO_ACTIVE_ROLES'">No Active roles
+                            to login. Please contact admin@drdlr.gov.za.
+                        </span>
+
+                    </div>
+                    <div class="form-group d-flex justify-content-between">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" formControlName="keep" class="custom-control-input checkbox-main"
+                                id="login-keep">
+                            <label class="custom-control-label" for="login-keep">Keep me signed in</label>
+                        </div>
+                        <a class="btn btn-link forgot transition pull-right" [routerLink]="['/forgot-password']"
+                            href="javascript:void(0);">Forgot
+                            password?</a>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-main btn-block" type="submit"><i class="fa fa-sign-in"></i> Sign
+                            in</button>
+                    </div>
+                </form>
+
+                <div class="auth-sep"><span><span>Dont have an account? Register as </span></span></div>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-outline-warning" [routerLink]="['/external-register']"><i
+                                class="fa fa-user"></i> External
+                            User</button>
+                        <!-- <select formControlName="userType" class="form-control">
+                            <option></option>
+                            <option value="INTERNAL">Internal</option>
+                            <option value="EXTERNAL">External</option>
+                        </select> -->
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-outline-warning" [routerLink]="['/internal-register']"><i
+                                class="fa fa-home "></i> Internal
+                            User</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

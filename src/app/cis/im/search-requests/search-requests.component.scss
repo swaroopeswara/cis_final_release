@@ -1,0 +1,260 @@
+@import "../../../theme/styles/variables";
+
+.nav .nav-item .nav-link.active {
+    background-color: #395646;
+    color: #FFF;
+    font-size:15px;
+}
+
+
+.nav-tabs {    
+    background-color: #dddaa3;
+}
+
+// input[type="checkbox"] {
+//     width: 20px !important;
+//     height:20px !important;
+// }
+
+::-webkit-scrollbar {
+    height: 1em;
+    margin-left: 30px;
+    float: left;
+    background: #F5F5F5;
+    overflow-y: scroll;
+    margin-bottom: 25px;
+}
+
+div::-webkit-scrollbar {
+    width: 1em;
+  }
+  
+  div::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+    }
+    
+  div::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+  }
+  
+  ::-webkit-scrollbar-button {
+      background-color: #f3f3f3;
+      background-size: 10px 10px;
+      background-repeat: no-repeat;
+      background-position: center center;
+      height: 16px;
+      width: 1em;
+      -webkit-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f3f3f3;
+
+  }
+
+  ::-webkit-scrollbar-button:end:increment {
+      background-image: url(data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cGF0aCBkPSJNMTEuMzAzIDhsMTEuMzk0IDcuOTk3TDExLjMwMyAyNHoiLz48L3N2Zz4=);
+  }
+   
+  
+  ::-webkit-scrollbar-button:start:decrement {
+     background-image: url(data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cGF0aCBkPSJNMjAuNjk3IDI0TDkuMzAzIDE2LjAwMyAyMC42OTcgOHoiLz48L3N2Zz4=)
+  }
+
+.step{
+    text-align: center;
+    &:before, &:after{
+        content: '';
+        position: absolute;        
+        background-color: $gray-light;
+        top: 0;
+        margin-top: 23px;        
+        width: 50%;
+        height: 5px;
+        border-top: 1px solid $gray;
+        border-bottom: 1px solid $gray;        
+    }
+    &:before{
+        left: 0;
+    }
+    &:after{
+        right: 0;
+    }
+    &:first-child:before {
+        display: none; 
+    }
+    &.last:after{
+        display: none; 
+    }
+    .step-icon{
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        background: $gray-light;
+        border: 1px solid $gray;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin: 0 auto;
+        i{
+            margin: 0 auto;
+            font-size: 20px;
+            color: $gray;
+        }
+    }
+    &.active{
+        &:before, &:after{
+            background: $danger-color;
+            border:none;
+        }
+        .step-icon{
+            background: $danger-color;
+            border:none;
+            i{
+                color: $default-color; 
+            }
+        }
+    }
+    &.valid{
+        &:before, &:after{
+            background: $success-color;
+            border:none;
+        }
+        .step-icon{
+            background: $success-color;
+            border:none;
+            i{
+                color: $default-color; 
+            }
+        }
+    }
+    .step-name{
+        display: block;
+        margin-top: 14px;
+        color: $gray;
+        &.active{
+            color: $danger-color;
+        }
+        &.valid{
+            color: $success-color;
+        }
+    }
+}
+
+:host /deep/ datatable-header{
+    background-color: #dddaa3;
+}
+
+.form-wizard{  
+    margin-top:25px;
+    margin-bottom: 20px;
+    background: #f9f9f5;
+    padding-top: 15px; 
+    min-height: 400px;   
+    .form-title{
+        margin-bottom: 15px;
+        color: $gray;
+        border-bottom: 1px solid $gray-light;
+        padding: 0 15px;
+    }
+    .form-control-label{
+        color: $text-color !important;
+    }
+    .help-block{
+        position: absolute;
+        font-size: 11px;
+    }
+}
+
+.arrow{
+    font-size: 12px;
+}
+
+.card {
+    background-color: #ffffff;
+}
+
+.card .card-header {
+    background: #395646;
+}
+
+
+:host /deep/ .data-table .index-column-header{
+    width: 60px;
+    /* background-color: transparent; */
+}
+
+:host /deep/ .data-table input[type="checkbox"] {
+        width: 25px !important;
+        height:25px !important;
+}
+
+:host /deep/ .data-table thead {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+:host /deep/ .data-table .data-table-row.selected {
+    background-color: #395646;
+    color: white;
+}
+
+.modal { overflow: auto !important; }
+
+.select-column {
+    width: 20px;
+    height: 20px;
+}
+
+:host /deep/ .data-table .select-column-header {
+    pointer-events:none;
+    color:#AAA;
+    background:#F5F5F5;
+    opacity: 0 !important;
+}
+
+@media (max-width: 767px) { 
+    .step{
+        margin-bottom: 10px;
+        text-align: left;
+        .step-icon{
+            float: left;
+            margin-right: 15px;
+        }
+        &:before, &:after{
+            content: none;
+        }
+    }  
+}
+
+button[disabled]{
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+  }
+  
+  .file-upload{
+    .file-upload-btn{
+        position: absolute;
+        width: 100%;
+        height: 35px;
+        z-index: 9;
+        opacity: 0;
+    }
+    .delete-file{
+        position: absolute;
+        right: 50px;
+        top: 8px;
+        font-size: 16px;
+        opacity: .8;
+        cursor: pointer;
+        z-index: 99;
+        visibility: hidden;
+    }
+    &:hover .delete-file{
+        visibility: visible;
+    }
+}
+

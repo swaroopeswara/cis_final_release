@@ -1,0 +1,426 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#pr"><i
+                                                class="fa fa-file-text-o "></i>
+                                            Production Report</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#nr"><i
+                                                class="fa fa-file-text-o "></i> User
+                                            Notification Report </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#ob"><i
+                                                class="fa fa-file-text-o  "></i>
+                                            Overridden BusinessRules Report </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#upr"><i
+                                                class="fa fa-file-text-o  "></i>
+                                              User Production Report</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="pr">
+                                    <form class="row" [formGroup]="productivityReportForm">
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">From Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="fromDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('fromDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">To Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="toDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('toDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Province</label>
+                                            <div class="input-group">
+                                                <select formControlName="province" class="form-control">
+                                                    <option value="{{t.name}}={{t.code}}" *ngFor="let t of provinces">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('province').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Sectors</label>
+                                            <div class="input-group">
+                                                <select formControlName="sector" class="form-control">
+                                                    <option value="{{t.name}}" *ngFor="let t of sectors">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('sector').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Organisation</label>
+                                            <div class="input-group">
+                                                <input formControlName="organisation" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('organisation').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Section</label>
+                                            <div class="input-group">
+                                                <select formControlName="section" class="form-control">
+                                                    <option value="{{t.name}}={{t.code}}" *ngFor="let t of sections">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('section').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Category</label>
+                                            <div class="input-group">
+                                                <input formControlName="category" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('category').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Task Status</label>
+                                            <div class="input-group">
+                                                <input formControlName="taskStatus" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('taskStatus').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Officer</label>
+                                            <div class="input-group">
+                                                <input formControlName="officer" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('officer').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3 mb-3">
+                                            <button class="btn btn-primary pull-right"
+                                                (click)="getProductivityReport()"><i class="fa fa-check"></i>
+                                                Generate Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="tab-pane" id="nr">
+                                    <form class="row" [formGroup]="notificationReportForm">
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">From Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="fromDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasNReportError && notificationReportForm.get('fromDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">To Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="toDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasNReportError && notificationReportForm.get('toDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Province</label>
+                                            <div class="input-group">
+                                                <select formControlName="province" class="form-control">
+                                                    <option value="{{t.code}}={{t.name}}" *ngFor="let t of provinces">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasNReportError && notificationReportForm.get('province').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Section</label>
+                                            <div class="input-group">
+                                                <select formControlName="section" class="form-control">
+                                                    <option value=""></option>
+                                                    <option value="{{t.code}}={{t.name}}" *ngFor="let t of sections">{{t.name}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasNReportError && notificationReportForm.get('section').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">User Type</label>
+                                            <div class="input-group">
+                                                <input formControlName="userType" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasNReportError && notificationReportForm.get('userType').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Category</label>
+                                            <div class="input-group">
+                                                <input formControlName="category" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasNReportError && notificationReportForm.get('category').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Task Status</label>
+                                            <div class="input-group">
+                                                <input formControlName="taskStatus" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasNReportError && notificationReportForm.get('taskStatus').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <button class="btn btn-primary pull-right"
+                                                (click)="getNotificationReport()"><i class="fa fa-check"></i>
+                                                Generate Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="tab-pane" id="ob">
+                                    <form class="row" [formGroup]="overrideReportForm">
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">From Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="fromDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasOReportError && overrideReportForm.get('fromDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">To Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="toDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasOReportError && overrideReportForm.get('toDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Province</label>
+                                            <div class="input-group">
+                                                <select formControlName="province" class="form-control">
+                                                    <option value="{{t.code}}={{t.name}}" *ngFor="let t of provinces">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasOReportError && overrideReportForm.get('province').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Admin</label>
+                                            <div class="input-group">
+                                                <input formControlName="admin" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasOReportError && overrideReportForm.get('admin').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3 mb-3">
+                                            <button class="btn btn-primary pull-right"
+                                                (click)="getOverrideBusinessRulesReport()"><i class="fa fa-check"></i>
+                                                Generate Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="tab-pane" id="upr">
+                                    <form class="row" [formGroup]="userProductivityReportForm">
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">From Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="fromDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasUReportError && userProductivityReportForm.get('fromDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">To Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="toDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasUReportError && userProductivityReportForm.get('toDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Province</label>
+                                            <div class="input-group">
+                                                <select formControlName="province" class="form-control">
+                                                    <option value="{{t.code}}={{t.name}}" *ngFor="let t of provinces">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('province').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Sectors</label>
+                                            <div class="input-group">
+                                                <select formControlName="sector" class="form-control">
+                                                    <option value="{{t.code}}" *ngFor="let t of sectors">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('sector').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Organisation</label>
+                                            <div class="input-group">
+                                                <input formControlName="organisation" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('organisation').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Section</label>
+                                            <div class="input-group">
+                                                <select formControlName="section" class="form-control">
+                                                    <option value="{{t.code}}={{t.name}}" *ngFor="let t of sections">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('section').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Category</label>
+                                            <div class="input-group">
+                                                <input formControlName="category" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('category').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Task Status</label>
+                                            <div class="input-group">
+                                                <input formControlName="taskStatus" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasPReportError && productivityReportForm.get('taskStatus').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Officer</label>
+                                            <div class="input-group">
+                                                <input formControlName="officer" class="form-control" type="text">
+                                            </div>
+                                            <!-- <span class="help-block text-danger"
+                                                *ngIf="hasUReportError && userProductivityReportForm.get('officer').hasError('required')">
+                                                *
+                                                required</span> -->
+                                        </div>
+                                        <div class="form-group col-md-3 mb-3">
+                                            <button class="btn btn-primary pull-right"
+                                                (click)="getUserProductivityReport()"><i class="fa fa-check"></i>
+                                                Generate Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

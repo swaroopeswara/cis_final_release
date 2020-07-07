@@ -1,0 +1,232 @@
+@import "../../theme/styles/variables";
+
+.login-container{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    .card{
+        padding: 15px;
+        .btn-link{
+            padding: 0;
+            &.forgot{
+                font-size: 14px;
+            }
+            &:hover{
+                color: $main-color;
+            }
+        }
+       
+    }
+}
+
+.card {
+   background-color: #f0efdd;
+}
+
+.auth-sep {
+  margin-top: 32px;
+  margin-bottom: 24px;
+  line-height: 20px;
+  font-size: 15px;
+  text-align: center;
+  display: block;
+  position: relative;
+  & > span {
+    display: table-cell;
+    width: 30%;
+    white-space: nowrap;
+    padding: 0 14px;
+    color: $gray;
+    & > span {
+      margin-top: -11px;
+      display: block;
+      font-weight: 300;
+    }
+  }
+  &:before, &:after {
+    border-top: solid 1px $gray-light;
+    content: "";
+    height: 1px;
+    width: 35%;
+    display: table-cell;
+  }
+}
+
+.login-help{
+    margin: 0;
+    padding: 0;
+    li{
+        list-style: none;
+        display: inline-block;
+        margin-left: 10px;
+        &:first-child {
+            margin-left:0;
+        }
+        i{
+            cursor: pointer;
+            transition: all 0.1s ease;
+            color: #fff;
+            padding: 9px 9px 6px 9px;
+            font-size: 12px;
+            background-color: $main-color;
+            &.socicon-facebook{
+                background-color: $facebook-color;
+            }
+            &.socicon-twitter{
+                background-color: $twitter-color;
+            }
+            &.socicon-google{
+                background-color: $google-color;
+            }
+            &:hover{                         
+                opacity: 0.9;     
+            }
+        }
+    }
+}
+
+.step{
+    text-align: center;
+    &:before, &:after{
+        content: '';
+        position: absolute;        
+        background-color: $gray-light;
+        top: 0;
+        margin-top: 23px;        
+        width: 50%;
+        height: 5px;
+        border-top: 1px solid $gray;
+        border-bottom: 1px solid $gray;        
+    }
+    &:before{
+        left: 0;
+    }
+    &:after{
+        right: 0;
+    }
+    &:first-child:before {
+        display: none; 
+    }
+    &.last:after{
+        display: none; 
+    }
+    .step-icon{
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        background: $gray-light;
+        border: 1px solid $gray;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin: 0 auto;
+        i{
+            margin: 0 auto;
+            font-size: 20px;
+            color: $gray;
+        }
+    }
+    &.active{
+        &:before, &:after{
+            background: $danger-color;
+            border:none;
+        }
+        .step-icon{
+            background: $danger-color;
+            border:none;
+            i{
+                color: $default-color; 
+            }
+        }
+    }
+    &.valid{
+        &:before, &:after{
+            background: $success-color;
+            border:none;
+        }
+        .step-icon{
+            background: $success-color;
+            border:none;
+            i{
+                color: $default-color; 
+            }
+        }
+    }
+    .step-name{
+        display: block;
+        margin-top: 14px;
+        color: $gray;
+        &.active{
+            color: $danger-color;
+        }
+        &.valid{
+            color: $success-color;
+        }
+    }
+}
+
+.form-wizard{  
+    margin-top:25px;
+    margin-bottom: 20px;
+    background: #f0efdd;
+    padding-top: 15px; 
+    min-height: 400px;   
+    .form-title{
+        margin-bottom: 15px;
+        color: $gray;
+        border-bottom: 1px solid $gray-light;
+        padding: 0 15px;
+    }
+    .form-control-label{
+        color: $text-color !important;
+    }
+    .help-block{
+        position: absolute;
+        font-size: 11px;
+    }
+}
+
+.arrow{
+    font-size: 12px;
+}
+
+
+@media (max-width: 767px) { 
+    .step{
+        margin-bottom: 10px;
+        text-align: left;
+        .step-icon{
+            float: left;
+            margin-right: 15px;
+        }
+        &:before, &:after{
+            content: none;
+        }
+    }  
+}
+
+.file-upload{
+    .file-upload-btn{
+        position: absolute;
+        width: 100%;
+        height: 35px;
+        z-index: 9;
+        opacity: 0;
+    }
+    .delete-file{
+        position: absolute;
+        right: 50px;
+        top: 8px;
+        font-size: 16px;
+        opacity: .8;
+        cursor: pointer;
+        z-index: 99;
+        visibility: hidden;
+    }
+    &:hover .delete-file{
+        visibility: visible;
+    }
+}

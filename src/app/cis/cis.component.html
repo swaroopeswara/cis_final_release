@@ -1,0 +1,30 @@
+<az-navbar></az-navbar>  
+<div class="container-fluid">         
+    <div class="row"> 
+        <az-menu></az-menu>
+        <!--<az-sidebar></az-sidebar>-->
+        <div class="main-wrapper" style="background-color: #f1f0d7;"  [ngClass]="{'menu-collapsed': isMenuCollapsed}"> 
+            <div class="az-overlay" *ngIf="!isMenuCollapsed" (click)="hideMenu()"></div>
+
+            <div class="main">
+                <az-breadcrumb></az-breadcrumb>
+                <router-outlet></router-outlet>
+            </div> 
+
+          
+
+
+            <footer class="footer text-center clearfix">
+                <div class="footer-main pull-left  clearfix">
+                    <div class="copyright pull-left">&copy; Cis 2019</div>
+                </div>
+
+<!-- <div class="pull-right created">Created with <i class="fa fa-heart"></i></div> -->
+                
+            </footer>
+
+            <az-back-top position="200"></az-back-top>
+
+        </div>
+    </div>
+</div>

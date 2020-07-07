@@ -1,0 +1,968 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#in"><i
+                                                class="fa fa-users"></i>
+                                            All Internal Users</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#ex"><i class="fa fa-users"></i>
+                                            All External Users</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="in">
+
+                                    <div class="row">
+                                        <div class="form-group col-md-6" style="margin-bottom: 0rem;"></div>
+                                        <div class="form-group col-md-2" style="margin-bottom: 0rem;">Select Province:</div>
+                                        <div class="form-group col-md-2" style="margin-bottom: 0rem;">Select Role:</div>
+                                        <div class="form-group col-md-6">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-search"></i>
+                                                </span>
+                                                <input class="form-control custom-textbox" type="text"
+                                                    placeholder="Search" style="font-size: 13px;"
+                                                    (keyup)="updateFilter($event)" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-2" style="text-align: right;">
+                                            <select [disabled]="userProvinceCode !== 'null'"
+                                                [(ngModel)]="inProvinceCode" class="form-control"
+                                                (change)="getInternalUsersOfProvince()">
+                                                <option value="all">All Provinces</option>
+                                                <option value="{{t.code}}" *ngFor="let t of provinces">
+                                                    {{t.name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-2" style="text-align: right;">
+                                            <select [(ngModel)]="inRoleCode" class="form-control"
+                                                (change)="getInternalUsersOfProvince()">
+                                                <option value="all">All Roles</option>
+                                                <option value="{{t.rolecode}}" *ngFor="let t of inRoles">
+                                                    {{t.rolename}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-2" style="text-align: right;">
+                                            <button type="button" class="btn btn-primary"
+                                                (click)="getInternalUsersOfProvince()"><i class="fa fa-refresh"></i>
+                                                Refresh</button>
+                                        </div>
+                                    </div>
+                                    <data-table [items]="internalUsers" [itemCount]="itemCountIn" [indexColumn]="false"
+                                        [pageLimits]="limits" [pagination]="true" [page]="1"
+                                        (rowClick)="rowClick($event)" [selectOnRowClick]="true" [header]="false"
+                                        [noDataMessage]="'No data to display!'" [multiSelect]="false"
+                                        [substituteRows]="false" (reload)="reloadItems($event)">
+
+                                        <data-table-column [property]="'adUserName'" [visible]="true"
+                                            [header]="'User name'" [sortable]="true" [resizable]="true">
+                                        </data-table-column>
+                                        <!-- <data-table-column [property]="'userTypeName'" [header]="'User Type'"
+                                            [sortable]="false" [resizable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                    <span *ngIf="item.userTypeName == 'INTERNAL'" class="badge badge-primary">Internal</span>
+                                            </ng-template>
+                                        </data-table-column> -->
+                                        <data-table-column property="firstName" header="First Name" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="surname" header="Last Name" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column [property]="'isApproved'" [header]="'Approved?'"
+                                            [sortable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <span *ngIf="item.isApproved == 'PENDING'"
+                                                    class="badge badge-warning">Pending</span>
+                                                <span *ngIf="item.isApproved == 'YES'"
+                                                    class="badge badge-success">Approved</span>
+                                                <span *ngIf="item.isApproved == 'WAITING'"
+                                                    class="badge badge-info">Surveyor Approval
+                                                    Pending</span>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <data-table-column [property]="'isActive'" [header]="'Active?'"
+                                            [sortable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <span *ngIf="item.isActive == 'Y'"
+                                                    class="badge badge-success">Yes</span>
+                                                <span *ngIf="item.isActive == 'N'" class="badge badge-danger">No</span>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <data-table-column [property]="'I4gRfqCode'" [header]="'Actions'"
+                                            [resizable]="true">
+                                            <ng-template #dataTableHeader let-item="item">
+                                                <span>Action</span>
+                                            </ng-template>
+                                            <ng-template #dataTableCell let-item="item">
+                                                <button class="btn btn-outline-primary btn-md dropdown-toggle"
+                                                    style="height: 32px;font-size: 14px;" type="button"
+                                                    data-toggle="dropdown">Actions
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <div class="action-dropdown">
+                                                    <ul class="dropdown-menu"
+                                                        style="font-size: 14px;border-color: rgb(109, 111, 183);">
+                                                        <li>
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#checkRoles" (click)="selectedUser(item)"
+                                                                data-dismiss="modal">
+                                                                <i class="fa fa-user" style="color:grey"></i> Roles Info
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.isActive == 'Y'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#deactivateUserModal"
+                                                                (click)="selectedUser(item)" data-dismiss="modal">
+                                                                <i class="fa fa-lock" style="color:grey"></i> Deactivate
+                                                                User
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.isActive == 'N'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#activateUserModal"
+                                                                (click)="selectedUser(item)" data-dismiss="modal">
+                                                                <i class="fa fa-unlock " style="color:green"></i>
+                                                                Activate User
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                (click)="selectedUser(item)"
+                                                                data-target="#deleteUserModal" data-dismiss="modal">
+                                                                <i class="fa fa-times-circle" style="color:red"></i>
+                                                                Delete User
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </ng-template>
+                                        </data-table-column>
+                                    </data-table>
+                                </div>
+                                <div class="tab-pane" id="ex">
+                                    <div class="row">
+                                        <div class="form-group col-md-6" style="margin-bottom: 0rem;"></div>
+                                        <div class="form-group col-md-2" style="margin-bottom: 0rem;">Select Province:</div>
+                                        <div class="form-group col-md-2" style="margin-bottom: 0rem;">Select Role:</div>
+                                        <div class="form-group col-md-6">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-search"></i>
+                                                </span>
+                                                <input class="form-control custom-textbox" type="text"
+                                                    placeholder="Search" style="font-size: 13px;"
+                                                    (keyup)="updateExternalUserFilter($event)" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-2" style="text-align: right;">
+                                            <select [disabled]="userProvinceCode !== 'null'"
+                                                [(ngModel)]="exProvinceCode" class="form-control"
+                                                (change)="getExternalUsersOfProvince()">
+                                                <option value="all">All Provinces</option>
+                                                <option value="{{t.code}}" *ngFor="let t of provinces">
+                                                    {{t.name}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-2" style="text-align: right;">
+                                            <select [(ngModel)]="exRoleCode" class="form-control"
+                                                (change)="getExternalUsersOfProvince()">
+                                                <option value="all">All Roles</option>
+                                                <option value="{{t.rolecode}}" *ngFor="let t of exRoles">
+                                                    {{t.rolename}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-2" style="text-align: right;">
+                                            <button type="button" class="btn btn-primary"
+                                                (click)="getExternalUsersOfProvince()"><i class="fa fa-refresh"></i>
+                                                Refresh</button>
+                                        </div>
+                                    </div>
+                                    <data-table [items]="externalUsers" [itemCount]="itemCountEx" [indexColumn]="false"
+                                        [pageLimits]="limits" [pagination]="true" [page]="1"
+                                        (rowClick)="rowClick($event)" [selectOnRowClick]="true" [header]="false"
+                                        [noDataMessage]="'No data to display!'" [multiSelect]="false"
+                                        [substituteRows]="false" (reload)="reloadItemsEx($event)">
+
+                                        <data-table-column [property]="'userName'" [visible]="true"
+                                            [header]="'User name'" [sortable]="true" [resizable]="true">
+                                        </data-table-column>
+                                        <!-- <data-table-column [property]="'userTypeName'" [header]="'User Type'"
+                                                [sortable]="false" [resizable]="true">
+                                                <ng-template #dataTableCell let-item="item">
+                                                        <span *ngIf="item.userTypeName == 'INTERNAL'" class="badge badge-primary">Internal</span>
+                                                </ng-template>
+                                            </data-table-column> -->
+                                        <data-table-column property="firstName" header="First Name" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="surname" header="Last Name" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column [property]="'isApproved'" [header]="'Approved?'"
+                                            [sortable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <span *ngIf="item.isApproved == 'PENDING'"
+                                                    class="badge badge-warning">Pending</span>
+                                                <span *ngIf="item.isApproved == 'YES'"
+                                                    class="badge badge-success">Approved</span>
+                                                <span *ngIf="item.isApproved == 'WAITING'"
+                                                    class="badge badge-info">Surveyor Approval
+                                                    Pending</span>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <data-table-column [property]="'isActive'" [header]="'Active?'"
+                                            [sortable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <span *ngIf="item.isActive == 'Y'"
+                                                    class="badge badge-success">Yes</span>
+                                                <span *ngIf="item.isActive == 'N'" class="badge badge-danger">No</span>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <data-table-column [property]="'I4gRfqCode'" [header]="'Actions'"
+                                            [resizable]="true">
+                                            <ng-template #dataTableHeader let-item="item">
+                                                <span>Action</span>
+                                            </ng-template>
+                                            <ng-template #dataTableCell let-item="item">
+                                                <button class="btn btn-outline-primary btn-md dropdown-toggle"
+                                                    style="height: 32px;font-size: 14px;" type="button"
+                                                    data-toggle="dropdown">Actions
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <div class="action-dropdown">
+                                                    <ul class="dropdown-menu"
+                                                        style="font-size: 14px;border-color: rgb(109, 111, 183);">
+                                                        <li>
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#viewUser"
+                                                                (click)="getExternalUserInfo(item)"
+                                                                data-dismiss="modal">
+                                                                <i class="fa fa-street-view" style="color:grey"></i>
+                                                                User Info
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#checkExternalRoles"
+                                                                (click)="getExternalUserInfo(item)"
+                                                                data-dismiss="modal">
+                                                                <i class="fa fa-street-view" style="color:grey"></i>
+                                                                Roles Info
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.mainRoleCode == 'EX010'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#getAssistantsPopup"
+                                                                (click)="getMyAssistants(item)" data-dismiss="modal">
+                                                                <i class="fa fa-street-view" style="color:grey"></i>
+                                                                Show Assistants
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.isActive == 'Y'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#deactivateUserModal"
+                                                                (click)="selectedUser(item)" data-dismiss="modal">
+                                                                <i class="fa fa-lock" style="color:grey"></i> Deactivate
+                                                                User
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.isActive == 'N'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                data-target="#activateUserModal"
+                                                                (click)="selectedUser(item)" data-dismiss="modal">
+                                                                <i class="fa fa-unlock " style="color:green"></i>
+                                                                Activate User
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" (click)="resetPassword(item)"
+                                                                data-dismiss="modal">
+                                                                <i class="fa fa-key" style="color:green"></i>
+                                                                Reset Password
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                (click)="selectedUser(item)"
+                                                                data-target="#deleteUserModal" data-dismiss="modal">
+                                                                <i class="fa fa-times-circle" style="color:red"></i>
+                                                                Delete User
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </ng-template>
+                                        </data-table-column>
+                                    </data-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deactivateUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 15px;" class="col-lg-12">
+                        Are you sure you want to deactivate the User ?
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning"
+                    (click)="deactivateUser(selectUser.userTypeName)">Yes</button>
+                <button type="button" id="btnDeactivatePopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="activateUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 15px;" class="col-lg-12">
+                        Are you sure you want to activate the User ?
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning"
+                    (click)="activateUser(selectUser.userTypeName)">Yes</button>
+                <button type="button" id="btnActivatePopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 15px;" class="col-lg-12">
+                        Are you sure you want to delete the User ?
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning"
+                    (click)="deleteUser(selectUser.userCode, selectUser.userTypeName)">Yes</button>
+                <button type="button" id="btnDeleteUserPopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 
+<div class="modal fade" id="deleteInternalUserRoleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 15px;" class="col-lg-12">
+                        Are you sure you want to delete the role ?
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning"
+                    (click)="removeInternalUserRole(selectedRole)">Yes</button>
+                <button type="button" id="btnDeleteUserRolePopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="modal fade" id="showUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:320px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    User Information</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 13px;" class="col-lg-12">
+                        <input type="text" class="form-control" name="otp" placeholder="Enter Role Name"
+                            value="Sibusiso Gigaba" required>
+                        <input type="text" class="form-control" name="otp" placeholder="Last Name" required>
+                        <input type="text" class="form-control" name="otp" placeholder="Mobile" required>
+                        <input type="text" class="form-control" name="otp" placeholder="Province" required>
+                        <button style="font-size: 12px;border: none;" type="button" class="btn btn-outline-warning"
+                            data-dismiss="modal"><i class="fa fa-download"></i> Download Signed Access</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+                <button type="button" id="btnVerifyMobileClose" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="viewUser" tabindex="-1" role="dialog" aria-labelledby="modal-large-label"
+    style="display: none;">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header state modal-primary" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    View User</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <form class="row" [formGroup]="personalForm">
+                    <div class="form-group col-md-2">
+                        <label class="form-control-label">Title</label>
+                        <select formControlName="salutation" class="form-control">
+                            <option value="Mr">Mr</option>
+                            <option value="Mrs">Mrs</option>
+                            <option value="Dr">Dr</option>
+                            <option value="Miss">Miss</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-4"><label class="form-control-label">First
+                            Name</label>
+                        <input formControlName="firstname" maxlength="100" class="form-control" type="text">
+
+                    </div>
+
+                    <div class="form-group col-md-3"><label class="form-control-label">Last
+                            Name</label>
+                        <input formControlName="lastname" maxlength="100" class="form-control" type="text">
+
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Organization Type</label>
+                        <select formControlName="orgtype" class="form-control">
+                            <option value="{{t.organizationTypeCode}}={{t.organizationTypeName}}"
+                                *ngFor="let t of organizationTypes">{{t.organizationTypeName}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="form-control-label">Sector</label>
+                        <div class="input-group">
+                            <select formControlName="sector" class="form-control">
+                                <option value="{{t.code}}={{t.name}}" *ngFor="let t of sectors">
+                                    {{t.name}}</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && personalForm.get('sector').hasError('required')">*
+                                required</span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-control-label">Contact email</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                            </div>
+                            <input formControlName="email" maxlength="255" class="form-control" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Mobile</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                            </div>
+                            <input formControlName="mobile" maxlength="20" class="form-control" type="text">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Telephone No</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-mobile-phone"></i></span>
+                            </div>
+                            <input formControlName="telephone" maxlength="20" class="form-control" type="text">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-4"> <label class="form-control-label">Address Line
+                            1</label>
+                        <input formControlName="addressline1" maxlength="255" class="form-control" type="text">
+
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label class="form-control-label">Address Line 2</label>
+                        <input formControlName="addressline2" maxlength="255" class="form-control" type="text">
+
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label class="form-control-label">Address Line 3</label>
+                        <input formControlName="addressline3" maxlength="255" class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="form-control-label">Postal Code</label>
+                        <input formControlName="zipcode" maxlength="255" class="form-control" type="text">
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Mode of Communcation</label>
+                        <div class="input-group">
+                            <select formControlName="communication" class="form-control">
+                                <option value="{{t.communicationTypeCode}}={{t.communicationTypeName}}"
+                                    *ngFor="let t of communcationTypes">{{t.communicationTypeName}}
+                                </option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && personalForm.get('communication').hasError('required')">*
+                                required</span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-7"></div>
+                    <div class="form-group col-md-4">
+                        <div class="abc-checkbox abc-checkbox-primary">
+                            <input id="checkbox1" formControlName="news" type="checkbox">
+                            <label for="checkbox1">Enable News Notifications</label>
+                        </div>
+                        <div class="abc-checkbox abc-checkbox-primary">
+                            <input id="checkbox2" formControlName="events" type="checkbox">
+                            <label for="checkbox2">Enable Events Notifications</label>
+                        </div>
+                        <div class="abc-checkbox abc-checkbox-primary">
+                            <input id="checkbox3" formControlName="information" type="checkbox">
+                            <label for="checkbox3">Enable Information Notifications</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="saveProfile()">Save</button>
+                <button type="button" id="saveProfilePopup" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal fade" id="viewUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document ">
+        <div class="modal-content modal-lg ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    View User</h6>
+            </div>
+            <div class="modal-body">
+                <div *ngIf="selectUser !== null" class="row">
+                    <div class="col-lg-12">
+                        <div class="modal-body">
+                            <fieldset id="address" class="required">
+                                <div class="form-group required">
+                                    <label for="input-payment-address-1" class="control-label">Email Address</label>
+                                    <input maxlength="100" type="text" disabled class="form-control"
+                                        value="{{selectUser.email}}">
+                                </div>
+                                <div class="form-group required">
+                                    <label for="input-payment-address-2" class="control-label">Full Name</label>
+                                    <input maxlength="100" type="text" disabled class="form-control"
+                                        value="{{selectUser.firstName}} {{selectUser.lastName}}">
+                                </div>
+                                <div class="form-group required">
+                                    <label for="input-payment-city" class="control-label">Role</label>
+                                    <input maxlength="100" type="text" disabled class="form-control"
+                                        value="{{selectUser.lastName}}">
+                                </div>
+                                <div class="form-group required">
+                                    <label for="input-payment-city" class="control-label">Mobile</label>
+                                    <input type="text" disabled class="form-control" value="{{selectUser.mobile}}">
+                                </div>
+                                <div class="form-group required">
+                                    <label for="input-payment-city" class="control-label">Province</label>
+                                    <input maxlength="100" type="text" disabled class="form-control"
+                                        value="{{selectUser.userProvince}}">
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-previous" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+<div class="modal fade" id="checkRoles" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document ">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Roles Details</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#addInternalRole">
+                            <i class="fa fa-plus"></i> Add Role
+                        </button>
+                    </div>
+                    <div class="col-sm-12">
+                        <table class="table table-sm">
+                            <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                <tr>
+                                    <th>Role Code</th>
+                                    <th>Role Name</th>
+                                    <th>Section</th>
+                                    <th>Province</th>
+                                    <th>isActive ?</th>
+                                    <th>Actions</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let role of allInternalUserRoles">
+                                    <td>
+                                        {{role.roleCode}}
+                                    </td>
+                                    <td>
+                                        {{role.roleName}}
+                                    </td>
+                                    <td>{{role.sectionName}}</td>
+                                    <td>{{role.provinceName}}</td>
+                                    <td>
+                                        <span *ngIf="role.isActive == 'Y'" class="badge badge-success">Yes</span>
+                                        <span *ngIf="role.isActive == 'N'" class="badge badge-danger">No</span>
+                                    </td>
+                                    <td *ngIf="role.isActive == 'Y'">
+                                        <button type="button" class="btn btn-outline-warning"
+                                            (click)="deactivateInternalRole(role)"><i class="fa fa-remove "></i>
+                                            Deactivate</button>
+                                    </td>
+                                    <td *ngIf="role.isActive == 'N'">
+                                        <button type="button" class="btn btn-outline-primary"
+                                            (click)="activateInternalRole(role)"><i class="fa fa-check "></i>
+                                            Activate</button>
+                                    </td>
+                                    <td>
+                                        <button type="button" (click)="removeInternalUserRole(role)"
+                                            style=" border:none; background-color: red;"
+                                            class="btn btn-outline-warning">
+                                            <i style="color:white;" class="fa fa-close"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <!-- <button type="button" class="btn btn-primary " (click)="updateRoles()">Assign</button> -->
+                <button type="button" id="btnAssignPopupClose" class="btn btn-main " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="checkExternalRoles" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document ">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Roles Details</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProvince">
+                            <i class="fa fa-plus"></i> Add Role
+                        </button>
+                    </div>
+                    <div class="col-sm-12">
+                        <table class="table table-sm">
+                            <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                <tr>
+                                    <th>Role Name</th>
+                                    <th>Province</th>
+                                    <th>Active</th>
+                                    <th>External Role Code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let role of allExternalroles">
+                                    <td>
+                                        {{role.userRoleName}}
+                                    </td>
+                                    <td>{{role.userProvinceName}}</td>
+                                    <td>
+                                        <span *ngIf="role.isActive == 'Y'" class="badge badge-success">Yes</span>
+                                        <span *ngIf="role.isActive == 'N'" class="badge badge-danger">No</span>
+                                    </td>
+                                    <td>{{role.externalRoleCode}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <!-- <button type="button" class="btn btn-primary " (click)="updateRoles()">Assign</button> -->
+                <button type="button" id="btnAssignPopupClose" class="btn btn-main " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="getAssistantsPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document ">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Assistants Details</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-sm">
+                            <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                <tr>
+                                    <th>userName</th>
+                                    <th>First Name</th>
+                                    <th>Surname</th>
+                                    <th>Active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let ass of assistants">
+                                    <td>
+                                        {{ass.userName}}
+                                    </td>
+                                    <td>
+                                        {{ass.firstName}}
+                                    </td>
+                                    <td>{{ass.surname}}</td>
+                                    <td>
+                                        <span *ngIf="ass.isActive == 'Y'" class="badge badge-success">Yes</span>
+                                        <span *ngIf="ass.isActive == 'N'" class="badge badge-danger">No</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <!-- <button type="button" class="btn btn-primary " (click)="updateRoles()">Assign</button> -->
+                <button type="button" id="btnAssignPopupClose" class="btn btn-main " data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addInternalRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog " role="document " style="width:320px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Add Role</h6>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="rolesForm">
+                    <fieldset class="required">
+                        <div *ngIf="!showUpload" class="form-group required">
+                            <label for="input-payment-city" class="control-label">Province Name</label>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && rolesForm.get('provinceName').hasError('required')">*
+                                (required)</span>
+                            <select formControlName="provinceName" class="form-control">
+                                <option value="{{t.code}}={{t.name}}" *ngFor="let t of provinces">{{t.name}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div *ngIf="!showUpload && !rolesForm.get('provinceName').hasError('required')"
+                            class="form-group required">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input id="radio1" type="radio" name="radioInline" (change)="onItemChange('Provincial')"
+                                    class="custom-control-input radio-warning">
+                                <label class="custom-control-label" for="radio1">Provincial Role</label>
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && rolesForm.get('roleType').hasError('required')">*
+                                    (required)</span>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input id="radio2" type="radio" name="radioInline" (change)="onItemChange('Sectional')"
+                                    class="custom-control-input radio-warning">
+                                <label class="custom-control-label" for="radio2">Sectional Role</label>
+                            </div>
+                        </div>
+
+                        <div *ngIf="!showUpload && roleTypeName == 'Sectional'" class="form-group required">
+                            <label for="input-payment-city" class="control-label">Section Name</label>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && rolesForm.get('sectionName').hasError('required')">*
+                                (required)</span>
+                            <span class="help-block text-danger" *ngIf="sameSection">*
+                                (Role for this Section is already added)</span>
+                            <select formControlName="sectionName" class="form-control"
+                                (change)="getRolesBySectionsAndProvince($event.target.value)">
+                                <option value=""></option>
+                                <option value="{{t.code}}={{t.name}}" *ngFor="let t of sections">{{t.name}}</option>
+                            </select>
+                        </div>
+                        <div *ngIf="!showUpload && (roleTypeName == 'Sectional' || roleTypeName == 'Provincial')"
+                            class="form-group required">
+                            <label for="input-payment-city" class="control-label">Role Name</label>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && rolesForm.get('roleName').hasError('required')">*
+                                (required)</span>
+                            <select formControlName="roleName" class="form-control">
+                                <option value=""></option>
+                                <option value="{{t.roleCode}}={{t.roleName}}" *ngFor="let t of roles">{{t.roleName}}
+                                </option>
+                            </select>
+                        </div>
+                        <div *ngIf="showUpload" class="form-group required">
+                            <label for="input-payment-city" class="control-label">Signed Access Doc</label>
+                            <span class="help-block text-danger" *ngIf="signedAccessUploaded">* (required)</span>
+                            <div class="input-group file-upload">
+                                <input type="file" multiple (change)="fileupload(input)" #input
+                                    class="file-upload-btn" />
+                                <input type="text" class="form-control col-sm-6" style="font-size: 12px;"
+                                    value="{{file}}">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" style="font-size: 16px;" type="button"><i
+                                            class="fa fa-folder-open-o" aria-hidden="true"></i> Browse..</button>
+                                </span>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" *ngIf="!showUpload && roleTypeName == 'Sectional'" class="btn btn-primary"
+                    (click)="createNewSection()">Add</button>
+                <button type="button" *ngIf="!showUpload && roleTypeName == 'Provincial'" class="btn btn-primary"
+                    (click)="createNewRole()">Add</button>
+                <button type="button" id="btnAddRolePopupClose" class="btn btn-previous" (click)="clearSection()"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addProvince" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog " role="document " style="width:320px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Add Province</h6>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form [formGroup]="externalRoleForm">
+                        <div style="font-size: 13px;" class="form-group col-lg-12">
+                            <select formControlName="province" class="form-control"
+                                [ngClass]="{'form-control-danger' : hasError && externalRoleForm.get('province').hasError('required'), 'form-control-success' : !externalRoleForm.get('province').hasError('required') }">
+                                <option value="{{t.code}}={{t.name}}" *ngFor="let t of provinces">{{t.name}}
+                                </option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && externalRoleForm.get('province').hasError('required')"> *
+                                required</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary" (click)="addExternalRole()">Save</button>
+                <button type="button" id="btnAddExternalRolePopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

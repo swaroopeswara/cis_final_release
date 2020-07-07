@@ -1,0 +1,292 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#ul"><i
+                                                class="fa fa-file-text-o "></i>
+                                            User Log Report</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#us"><i
+                                                class="fa fa-file-text-o "></i> User
+                                            Summary Report </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#qu"><i
+                                                class="fa fa-file-text-o  "></i>
+                                            Quarterly Deleted User Report </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#qd"><i
+                                                class="fa fa-file-text-o "></i>
+                                            Quarterly Updated User Report </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="ul">
+                                    <form class="row" [formGroup]="userReportForm">
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">From Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="fromDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasItemError && userReportForm.get('fromDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">To Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="toDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasItemError && userReportForm.get('toDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">User Types</label>
+                                            <div class="input-group">
+                                                <select formControlName="userType" class="form-control">
+                                                    <option></option>
+                                                    <option value="INTERNAL">Internal</option>
+                                                    <option value="EXTERNAL">External</option>
+                                                    <option value="All">All</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasItemError && userReportForm.get('userType').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-6 mb-3"></div>
+                                        <div class="form-group col-md-3 mb-3"></div>
+                                        <div class="form-group col-md-3 mb-3">
+                                            <button class="btn btn-primary pull-right" (click)="getUserReport()"><i
+                                                    class="fa fa-check"></i>
+                                                    Generate Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="tab-pane" id="us">
+                                    <form class="row" [formGroup]="userSummaryForm">
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">From Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="fromDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasSummaryError && userSummaryForm.get('fromDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">To Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="toDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasSummaryError && userSummaryForm.get('toDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">User Types</label>
+                                            <div class="input-group">
+                                                <select formControlName="userType" class="form-control">
+                                                    <option></option>
+                                                    <option value="INTERNAL">Internal</option>
+                                                    <option value="EXTERNAL">External</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasSummaryError && userSummaryForm.get('userType').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Sector</label>
+                                            <div class="input-group">
+                                                <select formControlName="sector" class="form-control">
+                                                    <option value=""></option>
+                                                    <option value="{{t.name}}" *ngFor="let t of sectors">{{t.name}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Section</label>
+                                            <div class="input-group">
+                                                <select formControlName="section" class="form-control">
+                                                    <option value=""></option>
+                                                    <option value="{{t.name}}" *ngFor="let t of sections">{{t.name}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Organization Type</label>
+                                            <div class="input-group">
+                                                <select formControlName="section" class="form-control">
+                                                    <option value=""></option>
+                                                    <option value="{{t.organizationTypeName}}"
+                                                        *ngFor="let t of organizationTypes">
+                                                        {{t.organizationTypeName}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Province</label>
+                                            <div class="input-group">
+                                                <select formControlName="province" class="form-control">
+                                                    <option value="">All</option>
+                                                    <option value="{{t.name}}" *ngFor="let t of provinces">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-12 "></div>
+                                        <div class="form-group col-md-9"></div>
+                                        <div class="form-group col-md-3">
+                                            <button class="btn btn-primary pull-right"
+                                                (click)="getUserSummaryReport()"><i class="fa fa-check"></i>
+                                                Generate Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="qd">
+                                    <form class="row" [formGroup]="quarterlyUpdatedUserReportForm">
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">From Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="fromDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasQuReportError && quarterlyUpdatedUserReportForm.get('fromDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">To Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="toDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasQuReportError && quarterlyUpdatedUserReportForm.get('toDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">User Types</label>
+                                            <div class="input-group">
+                                                <select formControlName="userType" class="form-control">
+                                                    <option></option>
+                                                    <option value="INTERNAL">Internal</option>
+                                                    <option value="EXTERNAL">External</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasQuReportError && quarterlyUpdatedUserReportForm.get('userType').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-6 mb-3"></div>
+                                        <div class="form-group col-md-3 mb-3"></div>
+                                        <div class="form-group col-md-3 mb-3">
+                                            <button class="btn btn-primary pull-right"
+                                                (click)="getQuarterlyUpdatedUserReport()"><i class="fa fa-check"></i>
+                                                Generate Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="qu">
+                                    <form class="row" [formGroup]="quarterlyDeletedUserReportForm">
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">From Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="fromDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasQdReportError && quarterlyDeletedUserReportForm.get('fromDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">To Date</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                                </div>
+                                                <input formControlName="toDate" class="form-control" type="date">
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasQdReportError && quarterlyDeletedUserReportForm.get('toDate').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">User Types</label>
+                                            <div class="input-group">
+                                                <select formControlName="userType" class="form-control">
+                                                    <option></option>
+                                                    <option value="INTERNAL">Internal</option>
+                                                    <option value="EXTERNAL">External</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasQdReportError && quarterlyDeletedUserReportForm.get('userType').hasError('required')">
+                                                *
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-6 mb-3"></div>
+                                        <div class="form-group col-md-3 mb-3"></div>
+                                        <div class="form-group col-md-3 mb-3">
+                                            <button class="btn btn-primary pull-right"
+                                                (click)="getQuarterlyDeletedUserReport()"><i class="fa fa-check"></i>
+                                                Generate Report</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,384 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#nuc"><i
+                                                class="fa fa-tag "></i>
+                                            Size Config</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#fc"><i class="fa fa-money"></i>
+                                            Fee Calculator Config</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#tlc"><i class="fa fa-clock-o "></i>
+                                            Turn Around Time Config</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#pdc"><i
+                                                class="fa fa-calendar "></i>
+                                            Payment Duedate Config</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="nuc">
+                                    <form [formGroup]="mbForm">
+                                        <div class="form-group col-md-4"><label class="form-control-label">Single
+                                                Requests
+                                                Size (MB)</label>
+                                            <input formControlName="size" maxlength="10" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && mbForm.get('size').hasError('required')">*
+                                                requried </span>
+                                        </div>
+                                        <div class="form-group col-md-8"></div>
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label">Description</label>
+                                            <textarea formControlName="description" style="font-size: 12px;"
+                                                maxlength="255" class="form-control" type="textarea"></textarea>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && mbForm.get('description').hasError('required')">*
+                                                requried </span>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <button type="button" class="btn btn-primary " class="btn btn-primary "
+                                                (click)="setRequestSizeValue()">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="fc">
+                                    <div class="row">
+                                        <div class="form-group col-md-2">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#createCategory" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add Category
+                                            </button>
+                                        </div>
+                                        <div *ngIf="category.length > 0" class="form-group col-md-2">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#createSubCategory" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add Sub Category
+                                            </button>
+                                        </div>
+                                        <div class="form-group col-md-8"></div>
+                                        <div class="form-group col-md-6">
+                                            <select [(ngModel)]="category" class="form-control"
+                                                (change)="getSubCategories()">
+                                                <option value=""></option>
+                                                <option value="{{t.categoryCode}}={{t.categoryName}}"
+                                                    *ngFor="let t of categories">
+                                                    {{t.categoryName}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div *ngIf="this.category" class="form-group col-md-2">
+                                            <button type="button" (click)="deactivateCategory()" class="btn btn-primary"
+                                                style="background-color: red;">
+                                                <i class="fa fa-plus"></i> Delete
+                                            </button>
+                                        </div>
+                                        <div *ngIf="category.length > 0" class="form-group col-md-12">
+                                            <table class="table table-sm">
+                                                <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Name</th>
+                                                        <th>Fixed Rate</th>
+                                                        <th>Hour Rate</th>
+                                                        <th>Half Hour Rate</th>
+                                                        <th>Edit</th>
+                                                        <th>Remove</th> 
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let cat of subCategories">
+                                                        <td>
+                                                            {{cat.costSubCategoryCode}}
+                                                        </td>
+                                                        <td>{{cat.costSubCategoryName}}</td>
+                                                        <td>
+                                                            {{cat.fixedRate}}
+                                                        </td>
+                                                        <td>
+                                                            {{cat.hourRate}}
+                                                        </td>
+                                                        <td>
+                                                            {{cat.halfHourRate}}
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-outline-warning btn-md btn-rounded"
+                                                                style="height: 32px;font-size: 14px;"
+                                                                (click)="selectItem(cat)" data-toggle="modal"
+                                                                data-target="#editSubCategory" type="button"> <i
+                                                                    class="fa fa-edit"></i>
+                                                                Edit
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" (click)="deactivateSubCategory(cat)"
+                                                                style=" border:none; background-color: red;"
+                                                                class="btn btn-outline-warning">
+                                                                <i style="color:white;" class="fa fa-close"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="tlc">
+                                    <form [formGroup]="tlForm">
+                                        <div class="form-group col-md-4"><label class="form-control-label">
+                                                Request Turn Around time (in days) </label>
+                                            <input formControlName="timelapse" maxlength="10" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && tlForm.get('timelapse').hasError('required')">*
+                                                requried </span>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && tlForm.get('pretimelapse').hasError('pattern')">*
+                                                only numbers allowed </span>
+                                        </div>
+                                        <div class="form-group col-md-4"><label class="form-control-label">
+                                                Pre Turn Around time (in days) </label>
+                                            <input formControlName="pretimelapse" maxlength="10" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && tlForm.get('pretimelapse').hasError('required')">*
+                                                requried </span>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && tlForm.get('pretimelapse').hasError('pattern')">*
+                                                only numbers allowed </span>
+                                        </div>
+                                        <div class="form-group col-md-4"></div>
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label">Description</label>
+                                            <textarea formControlName="description" style="font-size: 12px;"
+                                                maxlength="255" class="form-control" type="textarea"></textarea>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && tlForm.get('description').hasError('required')">*
+                                                requried </span>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <button type="button" class="btn btn-primary " class="btn btn-primary "
+                                                (click)="setTimeLapseValues()">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="pdc">
+                                    <form [formGroup]="dueForm">
+                                        <div class="form-group col-md-4"><label class="form-control-label">Due (in days)
+                                                </label>
+                                            <input formControlName="days" maxlength="10" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && dueForm.get('days').hasError('required')">*
+                                                requried </span>
+                                        </div>
+                                        <div class="form-group col-md-8"></div>
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label">Description</label>
+                                            <textarea formControlName="description" style="font-size: 12px;"
+                                                maxlength="255" class="form-control" type="textarea"></textarea>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && dueForm.get('description').hasError('required')">*
+                                                requried </span>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <button type="button" class="btn btn-primary " (click)="setDueDays()" class="btn btn-primary ">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Category</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="categoryForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="name" type="text" class="form-control" placeholder="Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && categoryForm.get('name').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateCategoryValue">*
+                                    already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createCategory()">Save</button>
+                    <button type="button" id="btnCreateCategoryClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createSubCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Sub Category</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="subCategoryForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <label class="form-control-label">Name</label>
+                                <input formControlName="costSubCategoryName" type="text" class="form-control">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && subCategoryForm.get('costSubCategoryName').hasError('required')">
+                                    *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateSubCategoryValue">*
+                                    already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <label class="form-control-label">Fixed Rate</label>
+                                <input formControlName="fixedRate" type="text" class="form-control">
+                                <span class="help-block text-danger" *ngIf="atleastOneRateError"> * enter either hour,
+                                    half hour or fixed rate.</span>
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && subCategoryForm.get('fixedRate').hasError('pattern')">* only
+                                    numbers allowed</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <label class="form-control-label">Hourly Rate</label>
+                                <input formControlName="hourRate" type="text" class="form-control">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && subCategoryForm.get('hourRate').hasError('pattern')">* only
+                                    numbers allowed</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <label class="form-control-label">Half Hourly Rate</label>
+                                <input formControlName="halfHourRate" type="text" class="form-control">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && subCategoryForm.get('halfHourRate').hasError('pattern')">* only
+                                    numbers allowed</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createSubCategory()">Save</button>
+                    <button type="button" id="btnCreateSubCategoryClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editSubCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Sub Category</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="editSubCategoryForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <label class="form-control-label">Name</label>
+                                <input disabled formControlName="costSubCategoryName" type="text" class="form-control">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && editSubCategoryForm.get('costSubCategoryName').hasError('required')">
+                                    *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateSubCategoryValue">*
+                                    already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <label class="form-control-label">Fixed Rate</label>
+                                <input formControlName="fixedRate" type="text" class="form-control">
+                                <span class="help-block text-danger" *ngIf="atleastOneRateError"> * enter either hour,
+                                    half hour or fixed rate.</span>
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && editSubCategoryForm.get('fixedRate').hasError('pattern')">* only
+                                    numbers allowed</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <label class="form-control-label">Hourly Rate</label>
+                                <input formControlName="hourRate" type="text" class="form-control">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && editSubCategoryForm.get('hourRate').hasError('pattern')">* only
+                                    numbers allowed</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <label class="form-control-label">Half Hourly Rate</label>
+                                <input formControlName="halfHourRate" type="text" class="form-control">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && editSubCategoryForm.get('halfHourRate').hasError('pattern')">*
+                                    only
+                                    numbers allowed</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="editSubCategory()">Save</button>
+                    <button type="button" id="btnEditSubCategoryClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>

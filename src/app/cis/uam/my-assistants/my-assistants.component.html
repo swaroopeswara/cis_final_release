@@ -1,0 +1,306 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#in"><i
+                                                class="fa fa-users"></i>
+                                            My Assistants</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="in">
+
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-search"></i>
+                                                </span>
+                                                <input class="form-control custom-textbox" type="text"
+                                                    placeholder="Search" style="font-size: 13px;"
+                                                    (keyup)="updateFilter($event)" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6" style="text-align: right;">
+                                            <button type="button" class="btn btn-primary" (click)="getMyAssistants()"><i
+                                                    class="fa fa-refresh"></i>
+                                                Refresh</button>
+                                        </div>
+                                    </div>
+                                    <data-table [items]="assistants" [itemCount]="itemCount" [indexColumn]="false"
+                                        [pageLimits]="limits" [pagination]="true" [page]="1"
+                                        (rowClick)="rowClick($event)" [selectOnRowClick]="true" [header]="false"
+                                        [noDataMessage]="'No data to display!'" [multiSelect]="false"
+                                        [substituteRows]="false" (reload)="reloadItems($event)">
+
+                                        <data-table-column [property]="'userName'" [visible]="true"
+                                            [header]="'User name'" [sortable]="true" [resizable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="firstName" header="First Name" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="surname" header="Last Name" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column [property]="'isApproved'" [header]="'Approved?'"
+                                            [sortable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <span *ngIf="item.isApproved == 'PENDING'"
+                                                    class="badge badge-warning">Pending By Admin</span>
+                                                <span *ngIf="item.isApproved == 'YES'"
+                                                    class="badge badge-success">Approved</span>
+                                                <span *ngIf="item.isApproved == 'WAITING'"
+                                                    class="badge badge-info">Surveyor Approval
+                                                    Pending</span>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <data-table-column [property]="'isActive'" [header]="'Active?'"
+                                            [sortable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <span *ngIf="item.isActive == 'Y'"
+                                                    class="badge badge-success">Yes</span>
+                                                <span *ngIf="item.isActive == 'N'" class="badge badge-danger">No</span>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <data-table-column [property]="'I4gRfqCode'" [header]="'Actions'"
+                                            [resizable]="true">
+                                            <ng-template #dataTableHeader let-item="item">
+                                                <span>Action</span>
+                                            </ng-template>
+                                            <ng-template #dataTableCell let-item="item">
+                                                <button class="btn btn-outline-primary btn-md dropdown-toggle"
+                                                    style="height: 32px;font-size: 14px;" type="button"
+                                                    data-toggle="dropdown">Actions
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <div class="action-dropdown">
+                                                    <ul class="dropdown-menu"
+                                                        style="font-size: 14px;border-color: rgb(109, 111, 183);">
+                                                        <li>
+                                                            <a class="dropdown-item" *ngIf="item.isApproved == 'YES'"
+                                                                data-toggle="modal" (click)="selectAssistant(item)"
+                                                                data-target="#deleteUserModal" data-dismiss="modal">
+                                                                <i class="fa fa-minus-circle" style="color:red"></i>
+                                                                Detach Assistant
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item"
+                                                                *ngIf="item.isApproved == 'WAITING'"
+                                                                (click)="approveRejectUser(item, 'PENDING')">
+                                                                <i class="fa fa-check" style="color:green"></i>
+                                                                Approve
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item"
+                                                                *ngIf="item.isApproved == 'WAITING'"
+                                                                (click)="approveRejectUser(item, 'REJECTED')">
+                                                                <i class="fa fa-times-circle" style="color:red"></i>
+                                                                Reject
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </ng-template>
+                                        </data-table-column>
+                                        <!-- <data-table-column [property]="'I4gRfqCode'" [header]="'Actions'"
+                                            [resizable]="true">
+                                            <ng-template #dataTableCell let-item="item">
+                                                <button *ngIf="item.isApproved == 'WAITING'"
+                                                    class="btn btn-primary btn-md btn-rounded"
+                                                    style="height: 32px;font-size: 14px;"
+                                                    (click)="approveRejectUser(item, 'PENDING')" type="button"> Approve
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <button *ngIf="item.isApproved == 'WAITING'"
+                                                    class="btn btn-primary btn-md btn-rounded"
+                                                    style="height: 32px;font-size: 14px;"
+                                                    (click)="approveRejectUser(item,'REJECTED')" type="button"> Reject
+                                                    <span class="caret"></span>
+                                                </button>
+                                            </ng-template>
+                                        </data-table-column> -->
+                                    </data-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 15px;" class="col-lg-12">
+                        Are you sure you want to detach this assistant ?
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning" (click)="detachAssistant()">Yes</button>
+                <button type="button" id="btnDetachAssistantPopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewUser" tabindex="-1" role="dialog" aria-labelledby="modal-large-label"
+    style="display: none;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header state modal-primary" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    View User</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <form class="row" [formGroup]="personalForm">
+                    <div class="form-group col-md-2">
+                        <label class="form-control-label">Title</label>
+                        <select formControlName="salutation" class="form-control">
+                            <option value="Mr">Mr</option>
+                            <option value="Mrs">Mrs</option>
+                            <option value="Dr">Dr</option>
+                            <option value="Miss">Miss</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4"><label class="form-control-label">First
+                            Name</label>
+                        <input disabled formControlName="firstname" maxlength="100" class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3"><label class="form-control-label">Last
+                            Name</label>
+                        <input disabled formControlName="lastname" maxlength="100" class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Organization Type</label>
+                        <select formControlName="orgtype" class="form-control">
+                            <option value="{{t.organizationTypeCode}}={{t.organizationTypeName}}"
+                                *ngFor="let t of organizationTypes">{{t.organizationTypeName}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label class="form-control-label">Sector</label>
+                        <div class="input-group">
+                            <select disabled formControlName="sector" class="form-control">
+                                <option value="{{t.code}}={{t.name}}" *ngFor="let t of sectors">
+                                    {{t.name}}</option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && personalForm.get('sector').hasError('required')">*
+                                required</span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label class="form-control-label">Contact email</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                            </div>
+                            <input disabled formControlName="email" maxlength="255" class="form-control" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Mobile</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                            </div>
+                            <input disabled formControlName="mobile" maxlength="20" class="form-control" type="text">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Telephone No</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-mobile-phone"></i></span>
+                            </div>
+                            <input disabled formControlName="telephone" maxlength="20" class="form-control" type="text">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-4"> <label class="form-control-label">Address Line
+                            1</label>
+                        <input disabled formControlName="addressline1" maxlength="255" class="form-control" type="text">
+
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label class="form-control-label">Address Line 2</label>
+                        <input disabled formControlName="addressline2" maxlength="255" class="form-control" type="text">
+
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label class="form-control-label">Address Line 3</label>
+                        <input disabled formControlName="addressline3" maxlength="255" class="form-control" type="text">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label class="form-control-label">Postal Code</label>
+                        <input disabled formControlName="zipcode" maxlength="255" class="form-control" type="text">
+
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="form-control-label">Mode of Communcation</label>
+                        <div class="input-group">
+                            <select disabled formControlName="communication" class="form-control">
+                                <option value="{{t.communicationTypeCode}}={{t.communicationTypeName}}"
+                                    *ngFor="let t of communcationTypes">{{t.communicationTypeName}}
+                                </option>
+                            </select>
+                            <span class="help-block text-danger"
+                                *ngIf="hasError && personalForm.get('communication').hasError('required')">*
+                                required</span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-7"></div>
+                    <div class="form-group col-md-4">
+                        <div class="abc-checkbox abc-checkbox-primary">
+                            <input disabled id="checkbox1" formControlName="news" type="checkbox">
+                            <label for="checkbox1">Enable News Notifications</label>
+                        </div>
+                        <div class="abc-checkbox abc-checkbox-primary">
+                            <input disabled id="checkbox2" formControlName="events" type="checkbox">
+                            <label for="checkbox2">Enable Events Notifications</label>
+                        </div>
+                        <div class="abc-checkbox abc-checkbox-primary">
+                            <input disabled id="checkbox3" formControlName="information" type="checkbox">
+                            <label for="checkbox3">Enable Information Notifications</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

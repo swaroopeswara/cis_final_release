@@ -1,0 +1,41 @@
+<nav class="nav az-navbar fixed-top">
+  <a class="navbar-brand" routerLink="/" (click)="closeSubMenus()">
+    <img src="assets/img/logo/az_logo_full.png" alt="" class="d-md-block d-none"> 
+    <!-- <img src="assets/img/logo/minlogo.png" alt="" class="d-md-none">  -->
+  </a>
+  <div id="lines" class="transition" (click)="toggleMenu()"></div>
+  <div><span style="padding-left: 10px;"> Welcome, {{fullName}}</span></div>
+  <form [formGroup]="roleForm" role="search" class="app-search"> 
+
+    <select *ngIf="userType == 'INTERNAL'" (change)="loadProvinceUser($event.target.value)" style="border-radius: 0px; background-color: #395646;width: 100%;" formControlName="globalrolecode" class="form-control">
+      <option style="color:white;" value="{{t.internalRoleCode}}" *ngFor="let t of roleList">{{t.roleName}} <span *ngIf="t.provinceName">in {{t.provinceName}}</span></option>
+    </select>
+    <!-- <a href="javascript:void(0)"><i class="fa fa-search"></i></a>
+    <button class="btn btn-main btn-block" (click)="onEvent()"><i class="fa fa-sign-out"></i> click</button> -->
+  </form>
+
+  <ul class="nav right-section">
+    <li *ngIf="userType == 'INTERNAL'" class="nav-item">
+      <az-messages></az-messages>
+    </li>
+    <li class="nav-item">
+      <div class="dropdown float-right user-menu">
+        <!-- <a class="dropdown-toggle user-link" data-toggle="dropdown" href="#" role="button" aria-expanded="false"> -->
+        <button class="btn btn-main btn-block" (click)="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+        <!-- </a> -->
+
+        <ul class="dropdown-menu">
+          <li class="user-info">
+            <button class="btn btn-main btn-block"><i class="fa fa-sign-out"></i> Logout</button>
+          </li>
+          <a class="dropdown-item" routerLink="profile"><i class="fa fa-user"></i>Profile</a>
+          <a class="dropdown-item" routerLink="settings"><i class="fa fa-cog"></i>Settings</a>
+          <a class="dropdown-item" routerLink="/"><i class="fa fa-lock"></i>Lock screen</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" routerLink="/login"><i class="fa fa-power-off"></i>Log out</a>
+        </ul>
+      </div>
+    </li>
+  </ul>
+
+</nav>

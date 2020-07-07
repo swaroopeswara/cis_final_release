@@ -1,0 +1,89 @@
+<div class="login-container"
+    style="background-image: url('http://www.dreamtemplate.com/dreamcodes/bg_images/color/c8.jpg');">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="col-xl-4 col-md-6 col-10 mx-auto">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2 class="card-title"><img src="../../../assets/img/logo/fulllogo.jpg" alt=""></h2>
+                <form [formGroup]="queryForm" class=" text-left" novalidate>
+                    <div class="form-group">
+                        <label for="fullName" class="control-label">Full Name</label>
+                        <input formControlName="fullName" class="form-control checking-field" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && queryForm.get('fullName').hasError('required')">* required</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="control-label">Email</label>
+                        <input formControlName="email" class="form-control checking-field" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && queryForm.get('email').hasError('required')">*
+                            required</span>
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && queryForm.get('email').hasError('invalidEmail')">Invalid
+                            email address</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="issueType" class="control-label">Issue Type</label>
+                        <select formControlName="issueType" class="form-control">
+                            <option></option>
+                            <option value="Registration">Registration</option>
+                            <option value="User Account">User Account</option>
+                            <option value="Guide to Website">Guide to Website</option>
+                            <option value="Digital Tour">Digital Tour</option>
+                            <option value="Benefits of Registration">Benefits of Registration</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && queryForm.get('issueType').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div *ngIf="queryForm.get('issueType').value == 'Other'" class="form-group">
+                        <input formControlName="other" class="form-control checking-field" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && queryForm.get('issueType').value == 'Other'">*
+                            required</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="control-label">Description</label>
+                        <textarea formControlName="description" rows="4" class="form-control checking-field"
+                            placeholder="Issue Description"></textarea>
+                        <span class="help-block text-danger"
+                            *ngIf="hasError && queryForm.get('description').hasError('required')">*
+                            required</span>
+                    </div>
+                    <!-- <div class="form-group" id="message" *ngIf="message">
+                        <span class="help-block text-danger">
+                            <span>{{message }}</span>
+                        </span>
+                    </div>
+
+                    <div class="form-group" id="errors" *ngIf="errors">
+                        <span class="help-block text-danger" *ngFor="let error of errors">
+                            <span>{{ error?.message }}</span>
+                        </span>
+                    </div> -->
+
+                    <div class="form-group">
+                        <button class="btn btn-main btn-block" (click)="saveIssueLog()" type="submit"><i
+                                class="fa fa-check-circle"></i> Submit Query</button>
+                    </div>
+                </form>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a [routerLink]="['/login']"><button class="btn btn-outline-warning"> <i
+                                    class="fa fa-arrow-left "></i> Back to Login</button></a>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-outline-warning"><i class="fa fa-info-circle "></i>
+                            Help</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

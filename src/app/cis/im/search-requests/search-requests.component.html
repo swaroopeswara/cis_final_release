@@ -1,0 +1,1308 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-header">
+                    <span>Categories and Subcategories</span>
+                </div>
+                <div class="card-body widget-body">
+                    <form class="row" [formGroup]="categoryForm">
+                        <div class="form-group col-md-5">
+                            <label for="input-payment-city" class="control-label">Select Category</label>
+                            <span class="help-block text-danger"
+                                *ngIf="hasCategoryError && categoryForm.get('category').hasError('required')">*
+                                (required)</span>
+                            <!-- <select formControlName="category" class="form-control" (change)="getRequestBulkSubTypes()">
+                                    <option value=""></option>
+                                    <option value="{{t.bulkTypeCode}}={{t.bulkTypeName}}"
+                                        *ngFor="let t of bulkrequesttypes">
+                                        {{t.bulkTypeName}}
+                                    </option>
+                                </select> -->
+                            <select formControlName="category" class="form-control" (change)="getSubCategories()">
+                                <option value=""></option>
+                                <option value="{{t.categoryCode}}={{t.categoryName}}" *ngFor="let t of categories">
+                                    {{t.categoryName}}
+                                </option>
+                            </select>
+                        </div>
+                        <div *ngIf="categoryForm.get('category').value.length > 0" class="form-group col-md-5">
+                            <label for="input-payment-city" class="control-label">Select Sub Category</label>
+                            <span class="help-block text-danger"
+                                *ngIf="hasCategoryError && categoryForm.get('subcategory').hasError('required')">*
+                                (required)</span>
+                            <!-- <select formControlName="subcategory" class="form-control">
+                                    <option value=""></option>
+                                    <option value="{{t.subBulkCode}}={{t.subBulkName}}"
+                                        *ngFor="let t of bulkrequestsubtypes">
+                                        {{t.subBulkName}}
+                                    </option>
+                                </select> -->
+                            <select formControlName="subcategory" class="form-control" (change)="selectSubCategory()">
+                                <option value=""></option>
+                                <option value="{{t.costSubCategoryCode}}={{t.costSubCategoryName}}"
+                                    *ngFor="let t of subCategories">
+                                    {{t.costSubCategoryName}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2"></div>
+                        <div class="form-group col-md-5"></div>
+                        <!-- <div *ngIf="categoryForm.get('subcategory').value.length > 0" class="form-group col-md-5">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr *ngIf="subCategory[0]?.fixedRate !== null">
+                                        <td>Fixed Rate:</td>
+                                        <td style="color:blue;">R {{subCategory[0]?.fixedRate}}</td>
+                                    </tr>
+                                    <tr *ngIf="subCategory[0]?.hourRate !== null">
+                                        <td>Hourly Rate:</td>
+                                        <td style="color:blue;">R {{subCategory[0]?.hourRate}}</td>
+                                    </tr>
+                                    <tr *ngIf="subCategory[0]?.halfHourRate !== null">
+                                        <td>Half Hour Rate:</td>
+                                        <td style="color:blue;">R {{subCategory[0]?.halfHourRate}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-header">
+                    <span>Search Criteria</span>
+                </div>
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#ns"><i
+                                                class="fa fa-search "></i>
+                                            Number</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#pd"><i class="fa fa-search "></i>
+                                            Parcel Description </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#st"><i class="fa fa-search "></i>
+                                            Sectional Title </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="ns">
+                                    <form class="row" [formGroup]="numberSearchForm">
+                                        <div class="form-group col-md-2">
+                                            <label class="form-control-label">Province:</label>
+                                            <div class="input-group">
+                                                <select
+                                                    [style.background-color]="selectedRequests.length > 0 ? '#dddddd' : '#fff'"
+                                                    [style.pointer-events]="selectedRequests.length > 0 ? 'none' : 'auto'"
+                                                    formControlName="province"
+                                                    (change)="selectProvince($event.target.value)" class="form-control">
+                                                    <option value=""></option>
+                                                    <option value="{{t.code}}" *ngFor="let t of provinces">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && numberSearchForm.get('province').hasError('required')">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="numberSearchForm.get('province').value !== ''"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Number Type:</label>
+                                            <div class="input-group">
+                                                <select formControlName="numberType" class="form-control">
+                                                    <option></option>
+                                                    <option value="SG">SG #</option>
+                                                    <option value="Compilation">Compilation #</option>
+                                                    <option value="Filing">Filing #</option>
+                                                    <option value="SurveyRecord">Survey Record #</option>
+                                                    <option value="DeedsRegistration">Deeds Registration #</option>
+                                                    <option value="Lease">Lease #</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && numberSearchForm.get('numberType').hasError('required')">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="numberSearchForm.get('province').value !== '' && numberSearchForm.get('numberType').value == 'Filing'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Document Type:</label>
+                                            <div class="input-group">
+                                                <select formControlName="documentType" class="form-control">
+                                                    <option></option>
+                                                    <option value="CORRESPONDENCE FILE">CORRESPONDENCE FILE</option>
+                                                    <option value="DOCKET WC">DOCKET WC</option>
+                                                    <option value="RURAL FILE">RURAL FILE</option>
+                                                    <option value="URBAN FILE">URBAN FILE</option>
+                                                    <option value="MAIN FILE">MAIN FILE</option>
+                                                    <option value="DOCKET EC">DOCKET EC</option>
+                                                    <option value="REDLINE REPORT">REDLINE REPORT</option>
+                                                    <option value="INTERDICTS">INTERDICTS</option>
+                                                    <option value="FRAM COMP">FRAM COMP</option>
+                                                    <option value="REGISTRY FILE">REGISTRY FILE</option>
+                                                    <option value="DB BOOK">DB BOOK</option>
+                                                    <option value="SECTIONAL TITLE DM NO">SECTIONAL TITLE DM NO</option>
+                                                    <option value="MISCELLANEOUS PLAN">MISCELLANEOUS PLAN</option>
+                                                    <option value="OTHER PLANS">OTHER PLANS</option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="numberSearchForm.get('province').value !== '' && numberSearchForm.get('numberType').value !== ''"
+                                            class="form-group col-md-2">
+                                            <label
+                                                class="form-control-label">{{numberSearchForm.get('numberType').value}}
+                                                Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="number" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchNumber()"><i
+                                                        class="fa fa-search "></i> </button>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && numberSearchForm.get('number').hasError('required')">
+                                                * required</span>
+                                        </div>
+                                        <div class="form-group col-md-2 mb-3">
+
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="pd">
+                                    <form class="row" [formGroup]="pdSearchForm">
+                                        <div class="form-group col-md-2">
+                                            <label class="form-control-label">Province:</label>
+                                            <div class="input-group">
+                                                <select
+                                                    [style.background-color]="selectedRequests.length > 0 ? '#dddddd' : '#fff'"
+                                                    [style.pointer-events]="selectedRequests.length > 0 ? 'none' : 'auto'"
+                                                    formControlName="province"
+                                                    (change)="selectProvince($event.target.value)" class="form-control">
+                                                    <option value=""></option>
+                                                    <option value="{{t.code}}" *ngFor="let t of provinces">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasPdError && pdSearchForm.get('province').hasError('required')">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="pdSearchForm.get('province').value !== ''"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Parcel Type:</label>
+                                            <div class="input-group">
+                                                <select formControlName="pdType"
+                                                    (change)="selectParcelType($event.target.value)"
+                                                    class="form-control">
+                                                    <option></option>
+                                                    <option value="FARM">Farm</option>
+                                                    <option value="ERF/LOT">ERF</option>
+                                                    <option value="HOLDING">Holding</option>
+                                                    <option value="LPI">LPI</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasPdError && pdSearchForm.get('pdType').hasError('required')">
+                                                * required</span>
+                                        </div>
+                                        <!-- Farm -->
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'FARM'"
+                                            class="form-group col-md-4">
+                                            <label class="form-control-label">Administrative District/Registration
+                                                Division:</label>
+                                            <div class="input-group">
+                                                <select formControlName="majorRegion" class="form-control"
+                                                    onfocus='this.size=8;' onblur='this.size=1;'
+                                                    onchange='this.size=1; this.blur();'>
+                                                    <option value=""></option>
+                                                    <option value="{{t}}" *ngFor="let t of majorregions">
+                                                        {{t}}</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasPdFarmError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'FARM'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Farm Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="farmNumber" class="form-control" type="text">
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasPdFarmError">
+                                                * required, only numbers allowed</span>
+                                        </div>
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'FARM'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Portion Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="portion" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchPd()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- ERF -->
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'ERF/LOT'"
+                                            class="form-group col-md-3">
+                                            <label class="form-control-label">Township Name:</label>
+                                            <div class="input-group">
+                                                <select formControlName="minorRegion" class="form-control"
+                                                    onfocus='this.size=8;' onblur='this.size=1;'
+                                                    onchange='this.size=1; this.blur();'>
+                                                    <option value=""></option>
+                                                    <option value="{{t}}" *ngFor="let t of erfMonirRegions">
+                                                        {{t}}</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasPdFarmError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'ERF/LOT'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">ERF Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="erfNumber" class="form-control" type="text">
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasPdFarmError">
+                                                * required</span>
+                                        </div>
+
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'ERF/LOT'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Portion Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="portionNumber" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchPd()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Holdings -->
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'HOLDING'"
+                                            class="form-group col-md-3">
+                                            <label class="form-control-label">Township Name:</label>
+                                            <div class="input-group">
+                                                <select formControlName="minorRegion" class="form-control"
+                                                    onfocus='this.size=8;' onblur='this.size=1;'
+                                                    onchange='this.size=1; this.blur();'>
+                                                    <option value=""></option>
+                                                    <option value="{{t}}" *ngFor="let t of holdingsMinorRegions">
+                                                        {{t}}</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasPdFarmError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'HOLDING'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Holding Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="holdingNumber" class="form-control" type="text">
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasPdFarmError">
+                                                * required</span>
+                                        </div>
+
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'HOLDING'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Portion Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="portionNumber" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchPd()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- LPI -->
+                                        <div *ngIf="pdSearchForm.get('pdType').value === 'LPI'"
+                                            class="form-group col-md-3">
+                                            <label class="form-control-label">LPI Code:</label>
+                                            <div class="input-group">
+                                                <input formControlName="lpi" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchPd()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasPdFarmError">
+                                                * required</span>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="st">
+                                    <form class="row" [formGroup]="stSearchForm">
+                                        <div class="form-group col-md-2">
+                                            <label class="form-control-label">Province:</label>
+                                            <div class="input-group">
+                                                <select
+                                                    [style.background-color]="selectedRequests.length > 0 ? '#dddddd' : '#fff'"
+                                                    [style.pointer-events]="selectedRequests.length > 0 ? 'none' : 'auto'"
+                                                    formControlName="province"
+                                                    (change)="selectProvince($event.target.value)" class="form-control">
+                                                    <option value=""></option>
+                                                    <option value="{{t.code}}" *ngFor="let t of provinces">
+                                                        {{t.name}}</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasPdError && stSearchForm.get('province').hasError('required')">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('province').value !== ''"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Parcel Type:</label>
+                                            <div class="input-group">
+                                                <select formControlName="stType"
+                                                    (change)="selectStParcelType($event.target.value)"
+                                                    class="form-control">
+                                                    <option></option>
+                                                    <option value="SchemeNumber">Scheme Number. (DM No.)</option>
+                                                    <option value="DeedsRegistrationNo">Deeds Registration No.</option>
+                                                    <option value="SGNo">SG No.</option>
+                                                    <option value="SchemeName">Scheme Name</option>
+                                                    <option value="ParcelERF">Parcel Description (ERF)</option>
+                                                    <option value="ParcelFarm">Parcel Description (Farm)</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasPdError && stSearchForm.get('stType').hasError('required')">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'SchemeNumber'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Scheme Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="schemeNumber" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchSt()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasStError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'DeedsRegistrationNo'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Deeds Registration No :</label>
+                                            <div class="input-group">
+                                                <input formControlName="deedsRegistrationNo" class="form-control"
+                                                    type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchSt()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasStError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'SGNo'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">SG Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="sgNo" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchSt()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasStError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'SchemeName'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Scheme Name:</label>
+                                            <div class="input-group">
+                                                <input formControlName="schemeName" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchSt()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasStError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'ParcelERF'"
+                                            class="form-group col-md-3">
+                                            <label class="form-control-label">Township Name:</label>
+                                            <div class="input-group">
+                                                <select formControlName="minorRegion" class="form-control"
+                                                    onfocus='this.size=8;' onblur='this.size=1;'
+                                                    onchange='this.size=1; this.blur();'>
+                                                    <option value=""></option>
+                                                    <option value="{{t}}" *ngFor="let t of erfMonirRegions">
+                                                        {{t}}</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasStError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'ParcelERF'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">ERF Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="erfNumber" class="form-control" type="text">
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasStError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'ParcelERF'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Portion Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="portionNumber" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchSt()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'ParcelFarm'"
+                                            class="form-group col-md-3">
+                                            <label class="form-control-label">Administrative District/Registration
+                                                Division:</label>
+                                            <div class="input-group">
+                                                <select formControlName="majorRegion" class="form-control"
+                                                    onfocus='this.size=8;' onblur='this.size=1;'
+                                                    onchange='this.size=1; this.blur();'>
+                                                    <option value=""></option>
+                                                    <option value="{{t}}" *ngFor="let t of majorregions">
+                                                        {{t}}</option>
+                                                </select>
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasStError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'ParcelFarm'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Farm Number:</label>
+                                            <div class="input-group">
+                                                <input formControlName="farmNumber" class="form-control" type="text">
+                                            </div>
+                                            <span class="help-block text-danger" *ngIf="hasStError">
+                                                * required</span>
+                                        </div>
+                                        <div *ngIf="stSearchForm.get('stType').value === 'ParcelFarm'"
+                                            class="form-group col-md-2">
+                                            <label class="form-control-label">Portion:</label>
+                                            <div class="input-group">
+                                                <input formControlName="portionNumber" class="form-control" type="text">
+                                                <button class="btn btn-primary pull-right" (click)="searchSt()"><i
+                                                        class="fa fa-search "></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30"
+            style="width: 160%; overflow: auto; overflow-y: hidden; white-space: nowrap">
+            <div widget class="card" style="width: 160%; overflow: auto; overflow-y: hidden; white-space: nowrap">
+                <div class="card-header">
+                    <span>Results</span>
+                </div>
+                <div class="card-body widget-body">
+                    <span *ngIf="numberSearchResults.length == 0" style="color:red;">No
+                        data to display !</span>
+                    <span *ngIf="numberSearchResults?.length > 0 && selectedRequests?.length == 0"
+                        style="color:rgb(20, 108, 6);font-size: 20px;">* Select
+                        the requests that you want to submit.</span>
+                    <span *ngIf="selectedRequests?.length > 0" style="color:rgb(73, 75, 254);font-size: 17px;">Selected
+                        Requests Size: {{selectedSize}} MB</span>
+                    <span *ngIf="selectedSize > configMbSize" style="color:red;font-size: 14px;">, additional costs may
+                        apply.</span>
+                </div>
+                <div class="card-body widget-body">
+                    <data-table [items]="numberSearchResults" [itemCount]="itemCount" [indexColumn]="true"
+                        [pageLimits]="limits" [pagination]="true" [page]="1" (rowClick)="rowClick($event)"
+                        [indexColumnHeader]="'Select'" [selectOnRowClick]="false" [header]="false"
+                        [noDataMessage]="'No data to display!'" [multiSelect]="true" [selectColumn]="false"
+                        [substituteRows]="false" (reload)="reloadItems($event)">
+
+                        <data-table-column *ngIf="this.whichSearch == 'no'" [property]="'documentNumber'" [header]="''"
+                            width="100px" [resizable]="true">
+                            <ng-template #dataTableCell let-item="item">
+                                <input id="checkbox2" type="checkbox"
+                                    (change)="rowSelect(item, $event.target, dataTableCell)">
+                                <label for="checkbox2"></label>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'pd'" [property]="'documentNumber'" [header]="''"
+                            width="100px" [resizable]="true">
+                            <ng-template #dataTableCell let-item="item">
+                                <input id="checkbox2" type="checkbox" (change)="rowSelect(item, $event.target)">
+                                <label for="checkbox2"></label>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" [property]="'documentNumber'" [header]="''"
+                            width="100px" [resizable]="true">
+                            <ng-template #dataTableCell let-item="item">
+                                <input id="checkbox2" type="checkbox" (change)="rowSelect(item, $event.target)">
+                                <label for="checkbox2"></label>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'no'" [property]="'sgNo'" [visible]="true"
+                            [header]="'SG No'" [sortable]="true" [resizable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'no'" property="province" header="Province"
+                            [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'no' && numberSearchForm.get('numberType').value == 'Filing'"
+                            property="filingNumber" header="Filing Number" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'no' && numberSearchForm.get('numberType').value == 'Compilation'"
+                            property="compilation" header="Compilation Number" [sortable]="true">
+                        </data-table-column> -->
+                        <data-table-column property="pageNumber" header="Page Number" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'no'" property="parcel" header="Parcel"
+                            [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'no'" property="region" header="Region"
+                            [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'no'" property="fileSize" header="Size (KB)"
+                            [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'no' && numberSearchForm.get('numberType').value !== 'Compilation'"
+                            property="documentType" header="Document Type" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'no' && (numberSearchForm.get('numberType').value !== 'Compilation' && numberSearchForm.get('numberType').value !== 'SurveyRecord')"
+                            property="diagramType" header="Diagram Type" [sortable]="true">
+                        </data-table-column> -->
+                        <data-table-column *ngIf="this.whichSearch == 'no'" [property]="'documentNumber'"
+                            [header]="'View'" width="100px" [resizable]="true">
+                            <ng-template #dataTableHeader let-item="item">
+                                <span>View</span>
+                            </ng-template>
+                            <ng-template #dataTableCell let-item="item">
+                                <button style="background: transparent; border: none; color:#362dc5; font-size: 20px;"
+                                    type="button" class="btn btn-primary btn-sm custom-btn" data-toggle="modal"
+                                    (click)="viewResult(item.preview)" data-target="#viewSearchImage"
+                                    data-dismiss="modal">
+                                    <i class="fa fa-eye "></i>
+                                </button>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'no'" [property]="'documentNumber'"
+                            [header]="'View'" width="130px" [resizable]="true">
+                            <ng-template #dataTableHeader let-item="item">
+                                <span>Download</span>
+                            </ng-template>
+                            <ng-template #dataTableCell let-item="item">
+                                <a *ngIf="item.showDownload == 'true'" target="_blank"
+                                    style="background: transparent; border: none; color:#362dc5; font-size: 20px;"
+                                    class="btn btn-primary btn-sm custom-btn" href="{{item.ftpSiteUrl}}"
+                                    download="imagename.png">
+                                    <i class="fa fa-download "></i>
+                                </a>
+                                <a *ngIf="item.showDownload == 'false'" disabled
+                                    style="background: transparent; border: none; color:#606060; font-size: 10px;">
+                                    * Bulk request required
+                                </a>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'no'" [property]="'documentNumber'"
+                            [header]="'View'" width="100px" [resizable]="true">
+                            <ng-template #dataTableHeader let-item="item">
+                                <span>Spatial</span>
+                            </ng-template>
+                            <ng-template #dataTableCell let-item="item">
+                                <a *ngIf="item.hasGis == 'true'"
+                                    style="background: transparent; border: none; color:#362dc5; font-size: 20px;"
+                                    class="btn btn-primary btn-sm custom-btn" (click)="showMap(item.lpi)">
+                                    <i class="fa fa-globe "></i>
+                                </a>
+                            </ng-template>
+                        </data-table-column>
+
+                        <!-- pd and Farm -->
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'FARM'"
+                            [property]="'registrationDivision'" [visible]="true" [header]="'Administrative District'"
+                            [sortable]="true" [resizable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'FARM'"
+                            property="farmNumber" header="Farm Number" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'FARM'"
+                            property="farmName" header="Farm Name" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'FARM'"
+                            property="portionNumber" header="Portion Number" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'FARM'"
+                            property="lpi" header="LPI Code" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'FARM'"
+                            property="sgNumber" header="SG No." [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'FARM'"
+                            property="documentType" header="Document Type" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'FARM'"
+                            property="diagramType" header="Diagram Type" [sortable]="true">
+                        </data-table-column>
+                        <!-- pd and ERF and holdings -->
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && (pdSearchForm.get('pdType').value == 'ERF/LOT' || pdSearchForm.get('pdType').value == 'HOLDING')"
+                            [property]="'minorRegion'" [visible]="true" [header]="'Minor Region'" [sortable]="true"
+                            [resizable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && (pdSearchForm.get('pdType').value == 'ERF/LOT' || pdSearchForm.get('pdType').value == 'HOLDING')"
+                            property="townShipName" header="Township Name" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && (pdSearchForm.get('pdType').value == 'ERF/LOT')"
+                            property="erfNumber" header="ERF Number" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'HOLDING'"
+                            property="erfNumber" header="Holding Number" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI'"
+                            property="parcel" header="Parcel Type" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'ERF/LOT'"
+                            property="portionNumber" header="Portion Number" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'HOLDING'"
+                            property="portionNumber" header="Portion" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && (pdSearchForm.get('pdType').value == 'ERF/LOT' || pdSearchForm.get('pdType').value == 'HOLDING')"
+                            property="lpi" header="LPI Code" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && (pdSearchForm.get('pdType').value == 'ERF/LOT' || pdSearchForm.get('pdType').value == 'HOLDING')"
+                            property="sgNumber" header="SG No." [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && (pdSearchForm.get('pdType').value == 'ERF/LOT' || pdSearchForm.get('pdType').value == 'HOLDING')"
+                            property="documentType" header="Document Type" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && (pdSearchForm.get('pdType').value == 'ERF/LOT' || pdSearchForm.get('pdType').value == 'HOLDING')"
+                            property="diagramType" header="Diagram Type" [sortable]="true">
+                        </data-table-column>
+                        <!-- lpi and ERF/HOLDING -->
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && (this.searchParcelType == 'ERF/LOT' || this.searchParcelType == 'HOLDING')"
+                            [property]="'minorRegion'" [visible]="true" [header]="'Minor Region'" [sortable]="true"
+                            [resizable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && (this.searchParcelType == 'ERF/LOT' || this.searchParcelType == 'HOLDING')"
+                            property="townShipName" header="Township Name" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && (this.searchParcelType == 'ERF/LOT' || this.searchParcelType == 'HOLDING')"
+                            property="portionNumber" header="Portion" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && (this.searchParcelType == 'ERF/LOT' || this.searchParcelType == 'HOLDING')"
+                            property="lpi" header="LPI Code" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && (this.searchParcelType == 'ERF/LOT' || this.searchParcelType == 'HOLDING')"
+                            property="sgNumber" header="SG No." [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && (this.searchParcelType == 'ERF/LOT' || this.searchParcelType == 'HOLDING')"
+                            property="documentType" header="Document Type" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && (this.searchParcelType == 'ERF/LOT' || this.searchParcelType == 'HOLDING')"
+                            property="diagramType" header="Diagram Type" [sortable]="true">
+                        </data-table-column>
+                        <!-- lpi and FARM -->
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && this.searchParcelType == 'FARM'"
+                            [property]="'registrationDivision'" [visible]="true" [header]="'Administrative District'"
+                            [sortable]="true" [resizable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && this.searchParcelType == 'FARM'"
+                            property="farmNumber" header="Farm Number" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && this.searchParcelType == 'FARM'"
+                            property="farmName" header="Farm Name" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && this.searchParcelType == 'FARM'"
+                            property="portionNumber" header="Portion Number" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && this.searchParcelType == 'FARM'"
+                            property="lpi" header="LPI Code" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && this.searchParcelType == 'FARM'"
+                            property="sgNumber" header="SG No." [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && this.searchParcelType == 'FARM'"
+                            property="documentType" header="Document Type" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column
+                            *ngIf="this.whichSearch == 'pd' && pdSearchForm.get('pdType').value == 'LPI' && this.searchParcelType == 'FARM'"
+                            property="diagramType" header="Diagram Type" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'pd'" property="fileSize" header="Size (KB)"
+                            [sortable]="true">
+                        </data-table-column>
+                        <!-- <data-table-column *ngIf="this.whichSearch == 'pd'" property="pageNumber" header="Page Number"
+                                [sortable]="true">
+                            </data-table-column> -->
+                        <data-table-column *ngIf="this.whichSearch == 'pd'" [property]="'documentType'"
+                            [header]="'View'" width="100px" [resizable]="true">
+                            <ng-template #dataTableHeader let-item="item">
+                                <span>View</span>
+                            </ng-template>
+                            <ng-template #dataTableCell let-item="item">
+                                <button style="background: transparent; border: none; color:#362dc5; font-size: 20px;"
+                                    type="button" class="btn btn-primary btn-sm custom-btn" data-toggle="modal"
+                                    (click)="viewResult(item.preview)" data-target="#viewSearchImage"
+                                    data-dismiss="modal">
+                                    <i class="fa fa-eye "></i>
+                                </button>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'pd'" [property]="'documentType'"
+                            [header]="'View'" width="130px" [resizable]="true">
+                            <ng-template #dataTableHeader let-item="item">
+                                <span>Download</span>
+                            </ng-template>
+                            <ng-template #dataTableCell let-item="item">
+                                <a *ngIf="item.showDownload == 'true'"
+                                    style="background: transparent; border: none; color:#362dc5; font-size: 20px;"
+                                    target="_blank" class="btn btn-primary btn-sm custom-btn" href="{{item.ftpSiteUrl}}"
+                                    download="imagename.png">
+                                    <i class="fa fa-download "></i>
+                                </a>
+                                <a *ngIf="item.showDownload == 'false'" disabled
+                                    style="background: transparent; border: none; color:#606060; font-size: 10px;">
+                                    * Bulk request required
+                                </a>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'pd'" [property]="'documentType'"
+                            [header]="'View'" width="100px" [resizable]="true">
+                            <ng-template #dataTableHeader let-item="item">
+                                <span>Spatial</span>
+                            </ng-template>
+                            <ng-template #dataTableCell let-item="item">
+                                <a *ngIf="item.hasGis == 'true'"
+                                    style="background: transparent; border: none; color:#362dc5; font-size: 20px;"
+                                    class="btn btn-primary btn-sm custom-btn" (click)="showMap(item.lpi)">
+                                    <i class="fa fa-globe "></i>
+                                </a>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" [property]="'schemaNumber'" [visible]="true"
+                            [header]="'Scheme No. (DM No.)'" [sortable]="true" [resizable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" [property]="'deedsRegistrationNumber'"
+                            [visible]="true" [header]="'Deeds Registration No.'" [sortable]="true" [resizable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" [property]="'sgNumber'" [visible]="true"
+                            [header]="'SG No.'" [sortable]="true" [resizable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" property="schemeName" header="Scheme Name"
+                            [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" property="parcel" header="Parcel Type"
+                            [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" property="lpi" header="LPI"
+                            [sortable]="true">
+                        </data-table-column>
+                        <!-- <data-table-column *ngIf="this.whichSearch == 'st'" property="pageNumber" header="Page Number"
+                                [sortable]="true">
+                            </data-table-column> -->
+                        <data-table-column *ngIf="this.whichSearch == 'st'" property="documentType"
+                            header="Document Type" [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" property="diagramType" header="Scheme Type"
+                            [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" property="fileSize" header="Size (KB)"
+                            [sortable]="true">
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" [property]="'documentType'"
+                            [header]="'View'" width="100px" [resizable]="true">
+                            <ng-template #dataTableHeader let-item="item">
+                                <span>View</span>
+                            </ng-template>
+                            <ng-template #dataTableCell let-item="item">
+                                <button style="background: transparent; border: none; color:#362dc5; font-size: 20px;"
+                                    type="button" class="btn btn-primary btn-sm custom-btn" data-toggle="modal"
+                                    (click)="viewResult(item.preview)" data-target="#viewSearchImage"
+                                    data-dismiss="modal">
+                                    <i class="fa fa-eye "></i>
+                                </button>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" [property]="'diagramType'" [header]="'View'"
+                            width="130px" [resizable]="true">
+                            <ng-template #dataTableHeader let-item="item">
+                                <span>Download</span>
+                            </ng-template>
+                            <ng-template #dataTableCell let-item="item">
+                                <a *ngIf="item.showDownload == 'true'"
+                                    style="background: transparent; border: none; color:#362dc5; font-size: 20px;"
+                                    target="_blank" class="btn btn-primary btn-sm custom-btn" href="{{item.ftpSiteUrl}}"
+                                    download="imagename.png">
+                                    <i class="fa fa-download "></i>
+                                </a>
+                                <a *ngIf="item.showDownload == 'false'" disabled
+                                    style="background: transparent; border: none; color:#606060; font-size: 10px;">
+                                    * Bulk request required
+                                </a>
+                            </ng-template>
+                        </data-table-column>
+                        <data-table-column *ngIf="this.whichSearch == 'st'" [property]="'diagramType'" [header]="'View'"
+                            width="100px" [resizable]="true">
+                            <ng-template #dataTableHeader let-item="item">
+                                <span>Spatial</span>
+                            </ng-template>
+                            <ng-template #dataTableCell let-item="item">
+                                <a *ngIf="item.hasGis == 'true'"
+                                    style="background: transparent; border: none; color:#362dc5; font-size: 20px;"
+                                    class="btn btn-primary btn-sm custom-btn" (click)="showMap(item.lpi)">
+                                    <i class="fa fa-globe "></i>
+                                </a>
+                            </ng-template>
+                        </data-table-column>
+                    </data-table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-header">
+                    <span>Selected Requests</span>
+                </div>
+                <div class="card-body widget-body">
+                    <span *ngIf="selectedRequests.length == 0" style="color:red;">No
+                        request selected !</span>
+                </div>
+                <div class="card-body widget-body">
+                    <div class="col-lg-12 col-12 bottom-30">
+                        <table class="table table-sm">
+                            <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Selected</th>
+                                    <th>Category</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of selectedRequests; let i = index">
+                                    <td>
+                                        {{item.id}}
+                                    </td>
+                                    <td>
+                                        <button data-toggle="modal" style="font-size: 12px; border:none;"
+                                            data-target="#showResultJson" (click)="selectSelectedRequestItem(i, item)"
+                                            class="btn btn-outline-primary pull-left">
+                                            Show Selected Request Item </button>
+                                    </td>
+                                    <td>
+                                        {{item.documentType}}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" type="button"
+                                            (click)="removeRequestItem(item)"><i class="fa fa-close "></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-1 col-12 bottom-30">
+                        <button id="btnSubmitRequest" [hidden]="true" data-toggle="modal" data-target="#createRequest"
+                            class="btn btn-primary pull-left"><i class="fa fa-th-list "></i>
+                            Submit Request1 </button>
+                        <button id="btnSubmitRequestValidation" [hidden]="true" data-toggle="modal"
+                            data-target="#submitRequestValidation" class="btn btn-primary pull-left"><i
+                                class="fa fa-th-list "></i>
+                            Submit Request2 </button>
+                    </div>
+                    <div class="col-lg-1 col-12 bottom-30">
+                        <button (click)="loadSelectedRequests()" class="btn btn-primary pull-left"><i
+                                class="fa fa-th-list "></i>
+                            Submit Request </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="submitRequestValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #e68f3e;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 15px;" class="col-lg-12">
+                        Please note that your request is above {{this.configMbSize}} MB and will be executed as a bulk
+                        request. Additional costs may apply, Would you like to proceed?
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning" (click)="loadSelectedRequestsConfirm()">Yes</button>
+                <button type="button" id="btnSubmitRequestValidationPopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createRequest" tabindex="-1" role="dialog" aria-labelledby="modal-large-label"
+    style="display: none;">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header state modal-primary" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Create Request</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <form class="row" [formGroup]="createRequestForm">
+                    <!-- <div class="form-group col-md-4"><label class="form-control-label">Title</label>
+                            <input formControlName="requestTitle" maxlength="100" class="form-control" type="text">
+                        </div> -->
+                    <div class="form-group col-md-4">
+                        <label class="form-control-label">Format Type *</label>
+                        <select formControlName="formatType" class="form-control" (change)="selectFormatType()">
+                            <option value="{{t.formatTypeName}}" *ngFor="let t of formatTypes">{{t.formatTypeName}}
+                            </option>
+                        </select>
+                        <span class="help-block text-danger"
+                            *ngIf="hasCrError && createRequestForm.get('formatType').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div *ngIf="createRequestForm.get('formatType').value === 'Electronic(CD)' || 
+                            createRequestForm.get('formatType').value === 'Electronic(DVD)' || 
+                            createRequestForm.get('formatType').value === 'Electronic(HDD)' || 
+                            createRequestForm.get('formatType').value === 'Hard Copy' || createRequestForm.get('formatType').value === 'Hard Copy (Laminated)'"
+                        class="form-group col-md-4">
+                        <label class="form-control-label">Delivery Methods *</label>
+                        <select formControlName="deliveryMethod" class="form-control">
+                            <option value="{{t.deliveryMethodName}}" *ngFor="let t of deliveryMethods">
+                                {{t.deliveryMethodName}}
+                            </option>
+                        </select>
+                        <span class="help-block text-danger"
+                            *ngIf="hasCdcError && createDvdCourierForm.get('deliveryMethod').hasError('required')">*
+                            required</span>
+                        <span class="help-block text-danger"
+                            *ngIf="hasClError && createDvdForm.get('deliveryMethod').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div *ngIf="createRequestForm.get('deliveryMethod').value === 'Courier'"
+                        class="form-group col-md-4"><label class="form-control-label">Postal Address 1 *</label>
+                        <input formControlName="postalAddress1" maxlength="100" class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasCdcError && createDvdCourierForm.get('postalAddress1').hasError('required')">*
+                            required</span>
+
+                    </div>
+                    <div *ngIf="createRequestForm.get('deliveryMethod').value === 'Courier'"
+                        class="form-group col-md-4"><label class="form-control-label">Postal Address 2 *</label>
+                        <input formControlName="postalAddress2" maxlength="100" class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasCdcError && createDvdCourierForm.get('postalAddress2').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div *ngIf="createRequestForm.get('deliveryMethod').value === 'Courier'"
+                        class="form-group col-md-4"><label class="form-control-label">Postal Address 3</label>
+                        <input formControlName="postalAddress3" maxlength="100" class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasCdcError && createDvdCourierForm.get('postalAddress3').hasError('required')">*
+                            required</span>
+                    </div>
+                    <div *ngIf="createRequestForm.get('formatType').value === 'Electronic(FTP)' || createRequestForm.get('formatType').value === 'Electronic(Email)'"
+                        class="form-group col-md-4"><label class="form-control-label">Email</label>
+                        <input formControlName="email" maxlength="100" class="form-control" type="text">
+                        <span class="help-block text-danger"
+                            *ngIf="hasCorError && createFtpForm.get('email').hasError('required')">*
+                            required</span>
+                        <span class="help-block text-danger"
+                            *ngIf="hasCorError && createFtpForm.get('email').hasError('invalidEmail')">* Invalid
+                            Email</span>
+                    </div>
+                    <div *ngIf="createRequestForm.get('formatType').value === 'Electronic(DVD)' || createRequestForm.get('formatType').value === 'Electronic(CD)' || createRequestForm.get('formatType').value === 'Hard Copy (Laminated)'"
+                        class="form-group col-md-12"><label class="form-control-label">Costs</label>
+                        <span style="font-size: 14px; color: rgb(255, 5, 5)"> R {{costs.fixedRate}}</span>
+                    </div>
+                    <div class="form-group col-md-12"><label class="form-control-label">Description</label>
+                        <table class="table table-sm">
+                            <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Selected</th>
+                                    <!-- <th>Select Category</th> -->
+                                    <th>Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of selectedItem; let i = index">
+                                    <td>
+                                        {{item.id}}
+                                    </td>
+                                    <td>
+                                        <button data-toggle="modal" style="font-size: 12px; border:none;"
+                                            data-target="#showResultJson" (click)="selectItem(i, item)"
+                                            class="btn btn-outline-primary pull-left">
+                                            Show Result Item </button>
+                                    </td>
+                                    <!-- <td>
+                                            <button data-toggle="modal" style="border:none;" data-target="#selectCategory"
+                                                (click)="selectItem(i, item)" class="btn btn-outline-warning pull-left"><i
+                                                    class="fa fa-th-list "></i>
+                                                Select Category </button>
+                                        </td> -->
+                                    <td>
+                                        {{item.requestGazette1Name}}
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <span class="help-block text-danger" *ngIf="selectCategoriesError">* select the categories for
+                            all requests</span>
+                    </div>
+                    <div class="form-group col-md-8"></div>
+                    <div class="form-group col-md-12">
+                        <div class="input-group file-upload">
+                            <label class="col-sm-4 form-control-label m-t-8">Upload Supporting Documents:</label>
+                            <input type="file" multiple (change)="fileRequestUpload(inputrequest)" #inputrequest
+                                class="file-upload-btn" />
+                            <input type="text" class="form-control col-sm-8" placeholder="Choose a file..."
+                                value="{{requestFile}}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="button"><i class="fa fa-folder-open-o"
+                                        aria-hidden="true"></i>
+                                    Browse..</button>
+                            </span>
+                        </div>
+                        <div class="col-sm-2">
+                        </div>
+                        <div class="col-sm-8">
+                            <span class="help-block text-danger" *ngIf="fileSizeLimit">*
+                                Max file size: 10 MB and File Name < 60 chars </span> </div> </div> <div
+                                    class="form-group col-sm-12">
+                                    <label class="col-sm-3 form-control-label m-t-8">Documents:</label>
+                                    <div class="col-sm-12">
+                                        <div class="card" style="height: 150px; overflow-y: auto;">
+                                            <div>
+                                                <ul class="list-group" *ngFor="let docs of getdoclist">
+                                                    <li class="list-group-item">
+                                                        <span>{{docs.substring(docs.lastIndexOf('/')+1)}}</span><span
+                                                            style="cursor:pointer;" (click)="deleteDocument(docs)">
+                                                            &nbsp;<i class="fa fa-trash text-danger"></i></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <div *ngIf="getdoclist" class="col-sm-8">
+                                <button type="button" style="border:none; text-decoration: underline;"
+                                    class="btn btn-outline-primary" (click)="downloadDocuments()">Download Docs</button>
+
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12 vertical-tabs bottom-30"
+                            *ngIf="userProvinceCode === searchProvinceCode && currentRoleCode == 'IN013'">
+                            <div class="row pl-3 pr-3">
+                                <ul class="nav flex-column left col-3">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#lb" data-toggle="tab">Assign to Officer</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content col-9">
+                                    <div class="tab-pane" id="lb">
+                                        <div class="col-sm-6">
+                                            <label class="form-control-label">Select Officer</label>
+                                            <select (change)="changeInfoManageToOfficer($event.target.value)"
+                                                class="form-control">
+                                                <option value=""></option>
+                                                <option value="{{t.userCode}}={{t.userName}}"
+                                                    *ngFor="let t of officers">
+                                                    {{t.firstName}} {{t.surname}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="createNewRequest()">Submit Request</button>
+                <button [hidden]="true" data-toggle="modal" id="noDataError" data-target="#errorModal" type="button"
+                    class="btn btn-primary">Nodata</button>
+                <button type="button" id="createNewRequestPopup" class="btn btn-default"
+                    data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="showResultJson" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog  modal-lg" role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #db8636;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Request Item Info</h6>
+            </div>
+            <div class="modal-body">
+                <div class="form-group col-md-12">
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr *ngFor="let item of jsonToBeUsed; let i = index">
+                                <td *ngIf="item.key == 'gazetteType1'">
+                                    Category
+                                </td>
+                                <td *ngIf="item.key == 'gazetteType2'">
+                                    Sub Category
+                                </td>
+                                <td *ngIf="item.key == 'requestCost'">
+                                    Request Cost
+                                </td>
+                                <td
+                                    *ngIf="item.key !== 'requestCost' && item.key !== 'gazetteType1' && item.key !== 'gazetteType2'">
+                                    {{item.key}}
+                                </td>
+                                <td>
+                                    {{item.value}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <textarea class="control-label" disabled style="width:100%; height:242px;">{{resultjson}}</textarea> -->
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-previous" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="viewSearchImage" class="modal fade" style="z-index:1051" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width: 600px; background: #fff;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <img src="{{ftpSiteUrl}}" alt="" width="100%" height="100%" />
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- <div id="myModal1" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+              <div class="modal-content" style="width: 600px; background: #fff;">
+                    <div class="modal-header">
+    
+                          <h4 class="modal-title">{{imageHeaderName}}</h4>
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                     <div class="modal-body">
+                    <!-- <img src="{{ftpSiteUrl}}" alt="" width="100%" height="100%" /> 
+                    <!-- <embed width=200 height=200 src="{{ftpSiteUrl}}" type="image/tiff" negative=yes> 
+                        <iframe width=200 height=200 src="{{ftpSiteUrl}}"></iframe>
+                    </div>
+              </div>
+    
+        </div>
+    </div> -->
+
+
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="modal-error-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header state modal-danger">
+                <h4 class="modal-title" id="modal-error-label"><i class="fa fa-warning"></i>No Information</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                Information not found.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+Uninstall nginx
+---------------
+
+=take the backup of nginx.conf from /etc/nginx 
+=take the backup of nginx.service in /usr/lib/systemd/system/nginx.service
+service nginx stop
+userdel -r nginx
+rm -rf /etc/nginx
+rm -rf /var/log/nginx
+rm -rf /var/cache/nginx/
+rm -rf /usr/lib/systemd/system/nginx.service
+rm -rf /usr/share/nginx/
+yum remove nginx
+
+Install nginx
+-------------
+
+yum install nginx
+copy the backup of nginx.conf to /etc/nginx 
+service nginx start
+
+ 

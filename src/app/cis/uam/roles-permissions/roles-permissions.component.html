@@ -1,0 +1,161 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#in"><i class="fa fa-shield "></i>
+                                            Internal Roles Permissions</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#ex"><i
+                                                class="fa fa-shield "></i>
+                                            External Role Permissions </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#db"><i class="fa fa-shield "></i>
+                                            Dashboard Permissions </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="ex">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-control-label">Select Role</label>
+                                        <select class="form-control" [(ngModel)]="role" (change)="changeRole()">
+                                            <option value=""></option>
+                                            <option value="{{t.rolecode}}" *ngFor="let t of roles">{{t.rolename}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-8"></div>
+                                    <div *ngIf="role" class="form-group col-md-12">
+                                        <form [formGroup]="accessRightForm">
+                                            <div class="form-group col-md-6">
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox1ar" (change)="updateAccessRights()"
+                                                        formControlName="canRegister" type="checkbox">
+                                                    <label for="checkbox1ar">Register</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox2uar" (change)="updateAccessRights()"
+                                                        formControlName="canUpdatepassword" type="checkbox">
+                                                    <label for="checkbox2uar">Update Password</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox3uar" (change)="updateAccessRights()"
+                                                        formControlName="canResetpassword" type="checkbox">
+                                                    <label for="checkbox3uar">Reset Password</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox4uar" (change)="updateAccessRights()"
+                                                        formControlName="canVerifyprofregistration" type="checkbox">
+                                                    <label for="checkbox4uar">Verify Professional Registration</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox6uar" (change)="updateAccessRights()"
+                                                        formControlName="canUserproductivityreport" type="checkbox">
+                                                    <label for="checkbox6uar">User Productivity Report</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox5" (change)="updateAccessRights()"
+                                                        formControlName="canUserreport" type="checkbox">
+                                                    <label for="checkbox5">User Report</label>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="db">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-control-label">Select Role</label>
+                                        <select class="form-control" [(ngModel)]="internalRole"
+                                            (change)="changeDashboardRole()">
+                                            <option value=""></option>
+                                            <option value="{{t.rolecode}}" *ngFor="let t of allInternalRoles">{{t.rolename}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-8"></div>
+                                    <div *ngIf="internalRole" class="form-group col-md-12">
+                                        <form [formGroup]="dashboardInternalWidgetsForm">
+                                            <div class="form-group col-md-6">
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox1udr" (change)="updateDashboardRights()"
+                                                        formControlName="monthlyCount" type="checkbox">
+                                                    <label for="checkbox1udr">Monthly Count</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox2udr" (change)="updateDashboardRights()"
+                                                        formControlName="weeklyCount" type="checkbox">
+                                                    <label for="checkbox2udr">Weekly Count</label>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="in">
+                                    <div class="form-group col-md-4">
+                                        <label class="form-control-label">Select Role</label>
+                                        <select class="form-control" [(ngModel)]="internalRole"
+                                            (change)="changeInternalRole()">
+                                            <option value=""></option>
+                                            <option value="{{t.rolecode}}" *ngFor="let t of allInternalRoles">
+                                                {{t.rolename}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-8"></div>
+                                    <div *ngIf="internalRole" class="form-group col-md-12">
+                                        <form [formGroup]="accessInternalRightForm">
+                                            <div class="form-group col-md-6">
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox1ui" (change)="updateInternalAccessRights()"
+                                                        formControlName="canRegister" type="checkbox">
+                                                    <label for="checkbox1ui">Register</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox2uir" (change)="updateInternalAccessRights()"
+                                                        formControlName="canGrantaccess" type="checkbox">
+                                                    <label for="checkbox2uir">Grant Access</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox3uar" (change)="updateInternalAccessRights()"
+                                                        formControlName="canAddadditionalroles" type="checkbox">
+                                                    <label for="checkbox3uar">Add Additional Roles</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox4iar" (change)="updateInternalAccessRights()"
+                                                        formControlName="canVerifyprofregistration" type="checkbox">
+                                                    <label for="checkbox4iar">Verify Professional Registration</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox6iar" (change)="updateInternalAccessRights()"
+                                                        formControlName="canUserproductivityreport" type="checkbox">
+                                                    <label for="checkbox6iar">User Productivity Report</label>
+                                                </div>
+                                                <div class="abc-checkbox abc-checkbox-primary">
+                                                    <input id="checkbox5iar" (change)="updateInternalAccessRights()"
+                                                        formControlName="canUserreport" type="checkbox">
+                                                    <label for="checkbox5iar">User Report</label>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

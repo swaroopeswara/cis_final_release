@@ -1,0 +1,523 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#in"><i
+                                                class="fa fa-users"></i>
+                                            My Requests</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="in">
+
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="fa fa-search"></i>
+                                                </span>
+                                                <input class="form-control custom-textbox" type="text"
+                                                    placeholder="Search" style="font-size: 13px;"
+                                                    (keyup)="updateFilter($event)" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6" style="text-align: right;">
+                                            <button type="button" class="btn btn-primary"
+                                                (click)="getRequestsOfUser()"><i class="fa fa-refresh"></i>
+                                                Refresh</button>
+                                        </div>
+                                    </div>
+                                    <data-table [items]="requests" [itemCount]="itemCount" [indexColumn]="false"
+                                        [pageLimits]="limits" [pagination]="true" [page]="1"
+                                        (rowClick)="rowClick($event)" [selectOnRowClick]="true" [header]="false"
+                                        [noDataMessage]="'No data to display!'" [multiSelect]="false"
+                                        [substituteRows]="false" (reload)="reloadItems($event)">
+
+                                        <data-table-column [property]="'requestCode'" [visible]="true"
+                                            [header]="'Request Code'" [sortable]="true" [resizable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="requestTypeName" header="Request Type"
+                                            [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="deliveryMethod" header="Delivery Method"
+                                            [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="itemsCount" header="No of Items" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column property="currentStatus" header="Status" [sortable]="true">
+                                        </data-table-column>
+                                        <data-table-column [property]="'I4gRfqCode'" [header]="'Actions'"
+                                            [resizable]="true">
+                                            <ng-template #dataTableHeader let-item="item">
+                                                <span>Action</span>
+                                            </ng-template>
+                                            <ng-template #dataTableCell let-item="item">
+                                                <button class="btn btn-outline-primary btn-md dropdown-toggle"
+                                                    style="height: 32px;font-size: 14px;" type="button"
+                                                    data-toggle="dropdown">Actions
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <div class="action-dropdown">
+                                                    <ul class="dropdown-menu"
+                                                        style="font-size: 14px;border-color: rgb(109, 111, 183);">
+                                                        <li>
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                (click)="selectRequest(item)" data-target="#viewRequest"
+                                                                data-dismiss="modal">
+                                                                <i class="fa fa-check"></i>
+                                                                Show Full Detail
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.currentStatus == 'Open'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                (click)="selectRequest(item)" data-target="#uploadPop"
+                                                                data-dismiss="modal">
+                                                                <i class="fa fa-upload"></i>
+                                                                Upload POP
+                                                            </a>
+                                                        </li>
+                                                        <li *ngIf="item.currentStatus == 'Open'">
+                                                            <a class="dropdown-item" data-toggle="modal"
+                                                                (click)="selectRequest(item)" style="color:red;"
+                                                                data-target="#cancelRequestModal" data-dismiss="modal">
+                                                                <i style="color: red;" class="fa fa-times-circle"></i>
+                                                                Cancel Request
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </ng-template>
+                                        </data-table-column>
+                                    </data-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal fade" id="cancelRequestModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Confirmation</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form #form="ngForm">
+                        <div class="col-lg-12">
+                            <label class="form-control-label">Reason for cancellation:</label>
+                            <textarea [(ngModel)]="cancelDescription" rows="5" class="form-control checking-field"
+                                placeholder="Cancel Description"></textarea>
+                            <span class="help-block text-danger" *ngIf="isCancelDescription">*
+                                required</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning" (click)="cancelRequest()">Submit</button>
+                <button type="button" id="btnCancelRequestPopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<div class="modal fade" id="cancelRequestModal" tabindex="-1" role="dialog" aria-labelledby="modal-large-label"
+    style="display: none;">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header state modal-primary" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Confirmation</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="cancelForm" class="row">
+                    <div class="form-group col-md-12">
+                        <label class="form-control-label">Reason for cancellation:</label>
+                        <textarea formControlName="cancelDescription" rows="5" class="form-control checking-field"
+                            placeholder="Cancel Description"></textarea>
+                        <span class="help-block text-danger"
+                            *ngIf="cancelForm.get('cancelDescription').value.length == 0">*
+                            required</span>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="cancelRequest()">Submit</button>
+                <button type="button" id="btnCancelRequestPopup" class="btn btn-default"
+                    data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="moveRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Move Request </h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 15px;" class="col-lg-12">
+                        <select [(ngModel)]="selectedProvince" class="form-control">
+                            <option value=""></option>
+                            <option value="{{t.code}}" *ngFor="let t of provinces">
+                                {{t.name}}</option>
+                        </select>
+                        <span class="help-block text-danger" *ngIf="hasError && selectedProvince.length === 0"> *
+                            required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning" (click)="moveRequest()">Move</button>
+                <button type="button" id="btnMoveRequestPopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="assignRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Assign to Officer</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div style="font-size: 15px;" class="col-lg-12">
+                        <select [(ngModel)]="selectedOfficer" class="form-control">
+                            <option value=""></option>
+                            <option value="{{t.code}}" *ngFor="let t of officers">
+                                {{t.name}}</option>
+                        </select>
+                        <span class="help-block text-danger" *ngIf="hasError && selectedOfficer.length === 0"> *
+                            required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning" (click)="assignRequest()">Move</button>
+                <button type="button" id="btnAssignRequestPopup" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="assignRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog " role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #0e4f76;">
+                <h5 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Upload Pop</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group required">
+                        <label for="input-payment-city" class="control-label">Signed Access Doc</label>
+                        <div class="input-group file-upload">
+                            <input type="file" multiple (change)="fileupload(input)" #input class="file-upload-btn" />
+                            <input type="text" class="form-control col-sm-6" style="font-size: 12px;"
+                                value="{{filePop}}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" style="font-size: 16px;" type="button"><i
+                                        class="fa fa-folder-open-o" aria-hidden="true"></i> Browse..</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-warning" (click)="submitPop()">Save</button>
+                <button type="button" id="btnUploadPopPopupClose" class="btn btn-previous"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewRequest" tabindex="-1" role="dialog" aria-labelledby="modal-large-label"
+    style="display: none;">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header state modal-primary" style="color : white; background : #0e4f76;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    View Request</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+            </div>
+            <div class="modal-body">
+                <form class="row" [formGroup]="requestForm">
+                    <div class="col-lg-12 col-12 bottom-30">
+                        <div class="clearfix">
+                            <ul class="nav nav-tabs top pull-left w-100p">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#ri"><i class="fa fa-users"></i>
+                                        Request Info</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#irole"><i class="fa fa-users"></i>
+                                        Request Items</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content top">
+                            <div class="tab-pane active" id="ri">
+                                <form [formGroup]="requestForm">
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label">Username</label>
+                                            <input formControlName="userName" maxlength="100" class="form-control"
+                                                type="text">
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="form-control-label">Request Type</label>
+                                            <input formControlName="requestTypeName" maxlength="100"
+                                                class="form-control" type="text">
+                                        </div>
+                                        <div class="form-group col-md-4"><label class="form-control-label">Format
+                                                Type</label>
+                                            <input formControlName="formatType" maxlength="100" class="form-control"
+                                                type="text">
+                                        </div>
+                                        <div class="form-group col-md-4"><label class="form-control-label">Delivery
+                                                Method</label>
+                                            <input formControlName="deliveryMethod" maxlength="100" class="form-control"
+                                                type="text">
+                                        </div>
+                                        <div *ngIf="this.requestForm.get('formatType').value.includes('Email') || this.requestForm.get('formatType').value.includes('FTP')"
+                                            class="form-group col-md-4"><label class="form-control-label">Delivery
+                                                Email</label>
+                                            <input formControlName="email" maxlength="100" class="form-control"
+                                                type="text">
+                                        </div>
+                                        <div class="form-group col-md-6"><label class="form-control-label">Postal
+                                                Address
+                                                1</label>
+                                            <input formControlName="postalAddress1" maxlength="100" class="form-control"
+                                                type="text">
+                                        </div>
+                                        <div class="form-group col-md-6"><label class="form-control-label">Postal
+                                                Address
+                                                2</label>
+                                            <input formControlName="postalAddress2" maxlength="100" class="form-control"
+                                                type="text">
+                                        </div>
+                                        <div class="form-group col-md-6"><label class="form-control-label">Postal
+                                                Address
+                                                3</label>
+                                            <input formControlName="postalAddress3" maxlength="100" class="form-control"
+                                                type="text">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane" id="irole">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table class="table table-sm">
+                                            <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let item of selectedRequestItems">
+                                                    <td>
+                                                        {{item.gazetteType1}}
+                                                    </td>
+                                                    <td>
+                                                        <!-- <button class="btn btn-outline-warning btn-md btn-rounded"
+                                                            style="height: 32px;font-size: 14px;"
+                                                            (click)="selectItem(item)" data-toggle="modal"
+                                                            data-target="#showResultJson" type="button"> <i
+                                                                class="fa fa-download"></i>
+                                                            Show Item Detail
+                                                            <span class="caret"></span>
+                                                        </button> -->
+
+                                                        <button *ngIf="item.requestGazetteType == 'REQUEST'"
+                                                            class="btn btn-outline-warning btn-md btn-rounded"
+                                                            style="height: 32px;font-size: 14px;"
+                                                            (click)="selectItem(item)" data-toggle="modal"
+                                                            data-target="#showResultJson" type="button"> <i
+                                                                class="fa fa-download"></i>
+                                                            Search Request Details
+                                                            <span class="caret"></span>
+                                                        </button>
+                                                        <button *ngIf="item.requestGazetteType == 'SEARCH'"
+                                                            class="btn btn-outline-warning btn-md btn-rounded"
+                                                            style="height: 32px;font-size: 14px;"
+                                                            (click)="selectItem(item)" data-toggle="modal"
+                                                            data-target="#showResultJson" type="button"> <i
+                                                                class="fa fa-download"></i>
+                                                            Show Item Details
+                                                            <span class="caret"></span>
+                                                        </button>
+                                                        <button *ngIf="item.requestGazetteType == 'COST_ITEM'"
+                                                            class="btn btn-outline-warning btn-md btn-rounded"
+                                                            style="height: 32px;font-size: 14px;"
+                                                            (click)="selectItem(item)" data-toggle="modal"
+                                                            data-target="#showResultJson" type="button"> <i
+                                                                class="fa fa-download"></i>
+                                                            Request Cost Details
+                                                            <span class="caret"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="requestPopup" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="showResultJson" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog  modal-lg" role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #db8636;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Request Item Info</h6>
+            </div>
+            <div class="modal-body">
+                <div class="form-group col-md-12">
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr *ngFor="let item of jsonToBeUsed; let i = index">
+                                <td *ngIf="item.key == 'gazetteType1'">
+                                    Category
+                                </td>
+                                <td *ngIf="item.key == 'gazetteType2'">
+                                    Sub Category
+                                </td>
+                                <td *ngIf="item.key == 'requestCost'">
+                                    Request Cost
+                                </td>
+                                <td
+                                    *ngIf="item.key !== 'requestCost' && item.key !== 'gazetteType1' && item.key !== 'gazetteType2'">
+                                    {{item.key}}
+                                </td>
+                                <td>
+                                    {{item.value}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-previous" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="uploadPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true " data-backdrop="static" data-keyboard="false">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="modal-dialog  modal-lg" role="document " style="width:620px">
+        <div class="modal-content ">
+            <div class="modal-header" style="color : white; background : #db8636;">
+                <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                        aria-hidden="true"></i>
+                    Upload Pop</h6>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    <label for="input-payment-city" class="control-label">Payment
+                        Confirmation</label>
+                    <span class="help-block text-danger">* (required)</span>
+                    <div class="input-group file-upload">
+                        <input type="file" multiple (change)="fileuploadpop(input2)" #input2 class="file-upload-btn" />
+                        <input type="text" class="form-control col-sm-6" style="font-size: 12px;"
+                            value="{{paymentFile}}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" style="font-size: 16px;" type="button"><i
+                                    class="fa fa-folder-open-o" aria-hidden="true"></i>
+                                Browse..</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <span class="help-block text-danger" *ngIf="fileSizeLimit">*
+                        Max file size: 10 MB</span>
+                </div>
+                <div class="col-sm-12" *ngIf="progress > 0">
+                    Uploading...
+                </div>
+                <div class="col-sm-12" *ngIf="progress > 0">
+                    <div class="progress bottom-15">
+                        <div class="progress-bar bg-primary" role="progressbar" [style.width]="progress + '%'"
+                            aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                            {{progress}} %
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" *ngIf="uploadedPop" class="btn btn-primary"
+                    (click)="uploadUserPaymentConfirmation()">Done</button>
+                <button type="button" id="requestUploadPopPopup" class="btn btn-previous"
+                    data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,660 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row" *ngIf="userType == 'EXTERNAL'">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#ta"><i
+                                                class="fa fa-user"></i>
+                                            Personal Information</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#roleInfo"><i
+                                                class="fa fa-user"></i> Role Information </a>
+                                    </li>
+                                    <li *ngIf="uamRights.updatepassword == 'Y'" class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#sections"><i
+                                                class="fa fa-key "></i>
+                                            Update Password </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#securityQuestions"><i
+                                                class="fa fa-key "></i>
+                                            Update Security Questions </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="ta">
+                                    <form class="row" [formGroup]="personalForm">
+                                        <div *ngIf="roleCode == 'EX002' || roleCode == 'EX10' || roleCode == 'EX11'"
+                                            class="form-group col-md-2"><label class="form-control-label">Professional
+                                                Practise Number</label>
+                                            <input disabled formControlName="ppnno" maxlength="100" class="form-control"
+                                                type="text">
+                                        </div>
+                                        <div *ngIf="roleCode == 'EX002' || roleCode == 'EX10' || roleCode == 'EX11'"
+                                            class="form-group col-md-3"><label class="form-control-label">Practice
+                                                Name</label>
+                                            <input disabled formControlName="practicename" maxlength="100"
+                                                class="form-control" type="text">
+                                        </div>
+                                        <div *ngIf="roleCode == 'EX002' || roleCode == 'EX10' || roleCode == 'EX11'"
+                                            class="form-group col-md-7"></div>
+                                        <div class="form-group col-md-2">
+                                            <label class="form-control-label">Title</label>
+                                            <select formControlName="salutation" class="form-control">
+                                                <option value="Mr">Mr</option>
+                                                <option value="Mrs">Mrs</option>
+                                                <option value="Dr">Dr</option>
+                                                <option value="Miss">Miss</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-4"><label class="form-control-label">First
+                                                Name</label>
+                                            <input formControlName="firstname" maxlength="100" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && personalForm.get('firstname').hasError('required')">*
+                                                required</span>
+                                        </div>
+
+                                        <div class="form-group col-md-3"><label class="form-control-label">Last
+                                                Name</label>
+                                            <input formControlName="lastname" maxlength="100" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && personalForm.get('lastname').hasError('required')">*
+                                                required</span>
+                                        </div>
+
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Organization Type</label>
+                                            <select formControlName="orgtype" class="form-control">
+                                                <option value="{{t.organizationTypeCode}}={{t.organizationTypeName}}"
+                                                    *ngFor="let t of organizationTypes">{{t.organizationTypeName}}
+                                                </option>
+                                            </select>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && personalForm.get('orgtype').hasError('required')">*
+                                                required</span>
+                                        </div>
+
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Sector</label>
+                                            <div class="input-group">
+                                                <select formControlName="sector" class="form-control">
+                                                    <option value="{{t.code}}={{t.name}}" *ngFor="let t of sectors">
+                                                        {{t.name}}</option>
+                                                </select>
+                                                <span class="help-block text-danger"
+                                                    *ngIf="hasError && personalForm.get('sector').hasError('required')">*
+                                                    required</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Contact email</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                                </div>
+                                                <input disabled formControlName="email" maxlength="255"
+                                                    class="form-control" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Mobile</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                                                </div>
+                                                <input formControlName="mobile" maxlength="20" class="form-control"
+                                                    type="text">
+                                                <span class="help-block text-danger"
+                                                    *ngIf="hasError && personalForm.get('mobile').hasError('required')">*
+                                                    required</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Telephone No</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i
+                                                            class="fa fa-mobile-phone"></i></span>
+                                                </div>
+                                                <input formControlName="telephone" maxlength="20" class="form-control"
+                                                    type="text">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-md-4"> <label class="form-control-label">Address Line
+                                                1</label>
+                                            <input formControlName="addressline1" maxlength="255" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && personalForm.get('addressline1').hasError('required')">*
+                                                required</span>
+
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label class="form-control-label">Address Line 2</label>
+                                            <input formControlName="addressline2" maxlength="255" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && personalForm.get('addressline2').hasError('required')">*
+                                                required</span>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label class="form-control-label">Address Line 3</label>
+                                            <input formControlName="addressline3" maxlength="255" class="form-control"
+                                                type="text">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label class="form-control-label">Postal Code</label>
+                                            <input formControlName="zipcode" maxlength="255" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && personalForm.get('zipcode').hasError('required')">*
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-10"></div>
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Mode of Communcation</label>
+                                            <div class="input-group">
+                                                <select formControlName="communication" class="form-control">
+                                                    <option
+                                                        value="{{t.communicationTypeCode}}={{t.communicationTypeName}}"
+                                                        *ngFor="let t of communcationTypes">{{t.communicationTypeName}}
+                                                    </option>
+                                                </select>
+                                                <span class="help-block text-danger"
+                                                    *ngIf="hasError && personalForm.get('communication').hasError('required')">*
+                                                    required</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-9"></div>
+                                        <div class="form-group col-md-4">
+                                            <div class="abc-checkbox abc-checkbox-primary">
+                                                <input id="checkbox1" formControlName="news" type="checkbox">
+                                                <label for="checkbox1">Enable News Notifications</label>
+                                            </div>
+                                            <div class="abc-checkbox abc-checkbox-primary">
+                                                <input id="checkbox2" formControlName="events" type="checkbox">
+                                                <label for="checkbox2">Enable Events Notifications</label>
+                                            </div>
+                                            <div class="abc-checkbox abc-checkbox-primary">
+                                                <input id="checkbox3" formControlName="information" type="checkbox">
+                                                <label for="checkbox3">Enable Information Notifications</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-2" style="text-align: right;">
+                                            <button type="button" class="btn btn-primary "
+                                                (click)="saveProfile()">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="roleInfo">
+                                    <div class="form-group col-md-12">
+                                        <div class="form-group col-md-3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#addProvince" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add Province
+                                            </button>
+                                        </div>
+                                        <table class="table table-sm">
+                                            <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                <tr>
+                                                    <th>Role Name</th>
+                                                    <th>Province Name</th>
+                                                    <th>Active</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let role of allExternalroles">
+                                                    <td>{{role.userRoleName}}</td>
+                                                    <td>{{role.userProvinceName}}</td>
+                                                    <td>
+                                                        <span *ngIf="role.isActive == 'Y'"
+                                                            class="badge badge-success">Yes</span>
+                                                        <span *ngIf="role.isActive == 'N'"
+                                                            class="badge badge-danger">No</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div *ngIf="uamRights.updatepassword == 'Y'" class="tab-pane" id="sections">
+                                    <form class="row" [formGroup]="passwordForm">
+                                        <div class="form-group col-md-4">
+                                            <label class="form-control-label">Old Password</label>
+                                            <input formControlName="oldPassword" maxlength="30" class="form-control"
+                                                type="password">
+                                            <span class="help-block text-danger"
+                                                *ngIf="submitted && passwordForm.get('oldPassword').hasError('required')">*
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-8"></div>
+                                        <div class="form-group col-md-4">
+                                            <label class="form-control-label">Password</label>
+                                            <input formControlName="password" maxlength="30" class="form-control"
+                                                type="password">
+                                            <span class="help-block text-danger"
+                                                *ngIf="submitted && passwordForm.get('password').hasError('required')">*
+                                                required</span>
+                                            <span class="help-block text-danger"
+                                                *ngIf="submitted && passwordForm.get('password').hasError('pattern')">Must
+                                                be 8 characters
+                                                with
+                                                one lower case and one upper case with one numeric and special
+                                                characters</span>
+                                            <span class="help-block text-danger"
+                                                *ngIf="submitted && passwordForm.get('confirmPassword').value !== passwordForm.get('password').value">Passwords
+                                                are not same</span>
+                                        </div>
+                                        <div class="form-group col-md-8"></div>
+
+                                        <div class="form-group col-md-4">
+                                            <label class="form-control-label">Confirm Password</label>
+                                            <input formControlName="confirmPassword" maxlength="30" class="form-control"
+                                                type="password">
+                                            <span class="help-block text-danger"
+                                                *ngIf="submitted && passwordForm.get('confirmPassword').hasError('required')">*
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-4"></div>
+                                        <div class="form-group col-md-4"></div>
+                                        <div class="form-group col-md-4" style="text-align:right;">
+                                            <button type="button" class="btn btn-primary"
+                                                (click)="updatePassword()">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="securityQuestions">
+                                    <form class="row" [formGroup]="securityForm">
+                                        <div class="form-group col-md-5"
+                                            [ngClass]="{'has-danger' : hasError && securityForm.get('secq1').hasError('required'), 'has-success' : !securityForm.get('secq1').hasError('required') }">
+                                            <label class="form-control-label">Security Question 1</label>
+                                            <select formControlName="secq1" (change)="selectQuestion()"
+                                                class="form-control">
+                                                <option value="{{t.securityquestionCode}}={{t.securityquestion}}"
+                                                    *ngFor="let t of securityQuestions">
+                                                    {{t.securityquestion}}</option>
+                                            </select>
+
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && securityForm.get('secq1').hasError('required')">
+                                                required</span>
+                                            <span class="help-block text-danger" *ngIf="hasQuestionError">Duplicates
+                                                questions. Please
+                                                select unique questions.</span>
+
+                                        </div>
+                                        <div class="form-group col-md-3"
+                                            [ngClass]="{'has-danger' : hasError && securityForm.get('ans1').hasError('required'), 'has-success' : !securityForm.get('ans1').hasError('required') }">
+                                            <label class="form-control-label">Answer 1</label>
+                                            <input formControlName="ans1" maxlength="255" class="form-control"
+                                                [ngClass]="{'form-control-danger' :  securityForm.get('ans1').hasError('required'), 'form-control-success' :  !securityForm.get('ans1').hasError('required') }"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && securityForm.get('ans1').hasError('required')">
+                                                required</span>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && securityForm.get('ans1').hasError('minlength')">Minimum
+                                                of 2
+                                                characters</span>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                        </div>
+
+                                        <div class="form-group col-md-5"
+                                            [ngClass]="{'has-danger' : hasError && securityForm.get('secq2').hasError('required'), 'has-success' : !securityForm.get('secq2').hasError('required') }">
+                                            <label class="form-control-label">Security Question 2</label>
+                                            <select formControlName="secq2" (change)="selectQuestion()"
+                                                class="form-control">
+                                                <option value="{{t.securityquestionCode}}={{t.securityquestion}}"
+                                                    *ngFor="let t of securityQuestions">
+                                                    {{t.securityquestion}}</option>
+                                            </select>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && securityForm.get('secq2').hasError('required')">
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3"
+                                            [ngClass]="{'has-danger' : hasError && securityForm.get('ans2').hasError('required'), 'has-success' : !securityForm.get('ans2').hasError('required') }">
+                                            <label class="form-control-label">Answer 2</label>
+                                            <input formControlName="ans2" maxlength="255" class="form-control"
+                                                [ngClass]="{'form-control-danger' :  securityForm.get('ans2').hasError('required'), 'form-control-success' :  !securityForm.get('ans2').hasError('required') }"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && securityForm.get('ans2').hasError('required')">
+                                                required</span>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && securityForm.get('ans2').hasError('minlength')">Minimum
+                                                of 2
+                                                characters</span>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                        </div>
+
+                                        <div class="form-group col-md-5"
+                                            [ngClass]="{'has-danger' : hasError && securityForm.get('secq3').hasError('required'), 'has-success' : !securityForm.get('secq3').hasError('required') }">
+                                            <label class="form-control-label">Security Question 3</label>
+                                            <select formControlName="secq3" (change)="selectQuestion()"
+                                                class="form-control">
+                                                <option value="{{t.securityquestionCode}}={{t.securityquestion}}"
+                                                    *ngFor="let t of securityQuestions">
+                                                    {{t.securityquestion}}</option>
+                                            </select>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && securityForm.get('secq3').hasError('required')">
+                                                required</span>
+                                        </div>
+                                        <div class="form-group col-md-3"
+                                            [ngClass]="{'has-danger' : hasError && securityForm.get('ans3').hasError('required'), 'has-success' : !securityForm.get('ans3').hasError('required') }">
+                                            <label class="form-control-label">Answer 3</label>
+                                            <input formControlName="ans3" maxlength="255" class="form-control"
+                                                [ngClass]="{'form-control-danger' :  securityForm.get('ans3').hasError('required'), 'form-control-success' :  !securityForm.get('ans3').hasError('required') }"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && securityForm.get('ans3').hasError('required')">
+                                                required</span>
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && securityForm.get('ans3').hasError('minlength')">Minimum
+                                                of 2
+                                                characters</span>
+                                        </div>
+                                        <div class="form-group col-md-4"></div>
+                                        <div class="form-group col-md-4"></div>
+                                        <div class="form-group col-md-4" style="text-align:right;">
+                                            <button type="button" class="btn btn-primary"
+                                                (click)="updateSecurityQuestions()">Update Security Questions
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="userType == 'INTERNAL'">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#ta"><i
+                                                class="fa fa-user"></i>
+                                            Personal Information</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#roleInfo"><i
+                                                class="fa fa-user"></i> Role Information </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="ta">
+                                    <form class="row" [formGroup]="personalInForm">
+                                        <div class="form-group col-md-4"><label class="form-control-label">First
+                                                Name</label>
+                                            <input formControlName="firstname" maxlength="100" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && personalInForm.get('firstname').hasError('required')">
+                                                required</span>
+                                        </div>
+
+                                        <div class="form-group col-md-3"><label class="form-control-label">Last
+                                                Name</label>
+                                            <input formControlName="lastname" maxlength="100" class="form-control"
+                                                type="text">
+                                            <span class="help-block text-danger"
+                                                *ngIf="hasError && personalInForm.get('lastname').hasError('required')">
+                                                required</span>
+                                        </div>
+
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Mobile</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                                                </div>
+                                                <input formControlName="mobile" maxlength="20" class="form-control"
+                                                    type="text">
+                                                <span class="help-block text-danger"
+                                                    *ngIf="hasError && personalInForm.get('mobile').hasError('required')">
+                                                    required</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-md-3">
+                                            <label class="form-control-label">Telephone No</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i
+                                                            class="fa fa-mobile-phone"></i></span>
+                                                </div>
+                                                <input formControlName="telephone" maxlength="20" class="form-control"
+                                                    type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-2" style="text-align: right;">
+                                            <button type="button" class="btn btn-primary "
+                                                (click)="updateInternalUser()">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane" id="roleInfo">
+                                    <div class="form-group col-md-12">
+                                        <div *ngIf="addNewRole" class="form-group col-md-3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#addInternalRole" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add Role
+                                            </button>
+                                        </div>
+                                        <table class="table table-sm">
+                                            <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                <tr>
+                                                    <th>Role Name</th>
+                                                    <th>Section Name</th>
+                                                    <th>Province Name</th>
+                                                    <th>Active </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let role of allInternalRoles">
+                                                    <td>
+                                                        {{role.roleName}}
+                                                    </td>
+                                                    <td>{{role.sectionName}}</td>
+                                                    <td>{{role.provinceName}}</td>
+                                                    <td>
+                                                        <span *ngIf="role.isActive == 'Y'"
+                                                            class="badge badge-success">Yes</span>
+                                                        <span *ngIf="role.isActive == 'N'"
+                                                            class="badge badge-warning">Approval Pending</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addProvince" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Add Province</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="externalRoleForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <select formControlName="province" class="form-control"
+                                    [ngClass]="{'form-control-danger' : hasError && externalRoleForm.get('province').hasError('required'), 'form-control-success' : !externalRoleForm.get('province').hasError('required') }">
+                                    <option value="{{t.code}}={{t.name}}" *ngFor="let t of provinces">{{t.name}}
+                                    </option>
+                                </select>
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && externalRoleForm.get('province').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && sameProvince">* Role already exists with this province.</span>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- <div class="row">
+                        <div style="color:red;font-size: 11px;" class="form-group col-lg-12">
+                            [Note: Please note that your will be logged out if new role is added, and account is
+                            submitted again for approval. You will be notified through email once approved by
+                            admin]
+                        </div>
+                    </div> -->
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="addExternalRole()">Save</button>
+                    <button type="button" id="btnAddExternalRolePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addInternalRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Add Role</h6>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="rolesForm">
+                        <fieldset class="required">
+                            <div *ngIf="!showUpload" class="form-group required">
+                                <label for="input-payment-city" class="control-label">Province Name</label>
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && rolesForm.get('provinceName').hasError('required')">*
+                                    (required)</span>
+                                <select formControlName="provinceName" class="form-control">
+                                    <option value="{{t.code}}={{t.name}}" *ngFor="let t of provinces">{{t.name}}
+                                    </option>
+                                </select>
+                                <span class="help-block text-danger" *ngIf="sameRole">*
+                                    (Role is already added)</span>
+                            </div>
+                            <div *ngIf="!showUpload && !rolesForm.get('provinceName').hasError('required')"
+                                class="form-group required">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input id="radio1" type="radio" name="radioInline"
+                                        (change)="onItemChange('Provincial')"
+                                        class="custom-control-input radio-warning">
+                                    <label class="custom-control-label" for="radio1">Provincial Role</label>
+                                    <span class="help-block text-danger"
+                                        *ngIf="hasError && rolesForm.get('roleType').hasError('required')">*
+                                        (required)</span>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input id="radio2" type="radio" name="radioInline"
+                                        (change)="onItemChange('Sectional')" class="custom-control-input radio-warning">
+                                    <label class="custom-control-label" for="radio2">Sectional Role</label>
+                                </div>
+                            </div>
+
+                            <div *ngIf="!showUpload && roleTypeName == 'Sectional'" class="form-group required">
+                                <label for="input-payment-city" class="control-label">Section Name</label>
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && rolesForm.get('sectionName').hasError('required')">*
+                                    (required)</span>
+                                <span class="help-block text-danger" *ngIf="sameSection">*
+                                    (Role for this Section is already added)</span>
+                                <select formControlName="sectionName" class="form-control"
+                                    (change)="getRolesBySectionsAndProvince($event.target.value)">
+                                    <option value="{{t.code}}={{t.name}}" *ngFor="let t of sections">{{t.name}}</option>
+                                </select>
+                            </div>
+                            <div *ngIf="!showUpload && (roleTypeName == 'Sectional' || roleTypeName == 'Provincial')"
+                                class="form-group required">
+                                <label for="input-payment-city" class="control-label">Role Name</label>
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && rolesForm.get('roleName').hasError('required')">*
+                                    (required)</span>
+                                <select formControlName="roleName" class="form-control">
+                                    <option value=""></option>
+                                    <option value="{{t.roleCode}}={{t.roleName}}" *ngFor="let t of roles">{{t.roleName}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div *ngIf="showUpload" class="form-group required">
+                                <label for="input-payment-city" class="control-label">Signed Access Doc</label>
+                                <span class="help-block text-danger" *ngIf="signedAccessUploaded">* (required)</span>
+                                <div class="input-group file-upload">
+                                    <input type="file" multiple (change)="fileupload(input)" #input
+                                        class="file-upload-btn" />
+                                    <input type="text" class="form-control col-sm-6" style="font-size: 12px;"
+                                        value="{{file}}">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" style="font-size: 16px;" type="button"><i
+                                                class="fa fa-folder-open-o" aria-hidden="true"></i> Browse..</button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div style="color:red;font-size: 11px;" class="form-group col-lg-12">
+                                    [Note: Please note that your will be logged out if new role is added, and account is
+                                    submitted again for approval. You will be notified through email once approved by
+                                    admin]
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" *ngIf="!showUpload && roleTypeName == 'Sectional'" class="btn btn-primary"
+                        (click)="createNewSection()">Add</button>
+                    <button type="button" *ngIf="!showUpload && roleTypeName == 'Provincial'" class="btn btn-primary"
+                        (click)="createNewRole()">Add</button>
+                    <button type="button" id="btnAddRolePopupClose" class="btn btn-previous" (click)="clearSection()"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>

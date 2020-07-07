@@ -1,0 +1,375 @@
+<!-- <input style="display:none;" type="text" [(ngModel)]="companyInfoId" [ngModelOptions]="{standalone: true}"> -->
+
+<div id="maindatadiv">
+    <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+        <p style="font-size: 20px; color: white">Loading...</p>
+    </ngx-spinner>
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-12 bottom-30">
+            <div widget class="card">
+                <div class="card-body widget-body">
+                    <div class="row mbm-20">
+                        <div class="col-lg-12 col-12 bottom-30">
+                            <div class="clearfix">
+                                <ul class="nav nav-tabs top pull-left w-100p">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#dm"><i
+                                                class="fa fa-th  "></i>
+                                            Delivery Methods </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#ft"><i class="fa fa-th  "></i>
+                                            Format Types </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-content top">
+                                <div class="tab-pane active" id="dm">
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#createDeliveryMethods" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add
+                                            </button>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <table class="table table-sm">
+                                                <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Delivery Method Name</th>
+                                                        <th>Description</th>
+                                                        <th>Remove</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let dm of deliveryMethods">
+                                                        <td>
+                                                            {{dm.deliveryMethodCode}}
+                                                        </td>
+                                                        <td>{{dm.deliveryMethodName}}</td>
+                                                        <td style="width: 40%;word-wrap:break-word;">{{dm.description}}</td>
+                                                        <td>
+                                                            <button type="button" (click)="deleteDeliveryMethod(dm)"
+                                                                style=" border:none; background-color: red;"
+                                                                class="btn btn-outline-warning">
+                                                                <i style="color:white;" class="fa fa-close"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="ft">
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#createFormatType" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add
+                                            </button>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <table class="table table-sm">
+                                                <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Format Type Name</th>
+                                                        <th>Remove</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let ft of formatTypes">
+                                                        <td>
+                                                            {{ft.formatTypeCode}}
+                                                        </td>
+                                                        <td>{{ft.formatTypeName}}</td>
+                                                        <td>
+                                                            <button type="button" (click)="deleteFormatType(ft)"
+                                                                style=" border:none; background-color: red;"
+                                                                class="btn btn-outline-warning">
+                                                                <i style="color:white;" class="fa fa-close"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="rk">
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                data-target="#createRequestKind" data-dismiss="modal">
+                                                <i class="fa fa-plus"></i> Add
+                                            </button>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <table class="table table-sm">
+                                                <thead style="background-color:#f6f6f6;font-size: 14px;">
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Request Kind Name</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let rk of RequestKinds">
+                                                        <td>
+                                                            {{rk.code}}
+                                                        </td>
+                                                        <td>{{rk.name}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createGazzetteTypes" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Gazzette Mode</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="gazzetteForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="name" type="text" class="form-control" placeholder="Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && gazzetteForm.get('name').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateGazzetteValue">*
+                                    already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createGazzetteType()">Save</button>
+                    <button type="button" id="btnCreateGazzetteClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createDeliveryMethods" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Delivery Method</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="deliveryMethodForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="name" type="text" class="form-control" placeholder="Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && deliveryMethodForm.get('name').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateDeliveryMethodValue">*
+                                    already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createDeliveryMethod()">Save</button>
+                    <button type="button" id="btnCreateDeliveryMethodClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createFormatType" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Format Type</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="formatTypeForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="name" type="text" class="form-control" placeholder="Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && formatTypeForm.get('name').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateFormatTypeValue">*
+                                    already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createFormatType()">Save</button>
+                    <button type="button" id="btnCreateFormatTypeClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createMediaType" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Format Type</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="MediaTypeForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="name" type="text" class="form-control" placeholder="Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && MediaTypeForm.get('name').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateMediaTypeValue">*
+                                    already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createMediaType()">Save</button>
+                    <button type="button" id="btnCreateMediaTypeClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createRequestType" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Request Type</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="RequestTypeForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="name" type="text" class="form-control" placeholder="Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && RequestTypeForm.get('name').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateRequestTypeValue">*
+                                    already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createRequestType()">Save</button>
+                    <button type="button" id="btnCreateRequestTypeClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createRequestKind" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true " data-backdrop="static" data-keyboard="false">
+        <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-clip-rotate">
+            <p style="font-size: 20px; color: white">Loading...</p>
+        </ngx-spinner>
+        <div class="modal-dialog " role="document " style="width:320px">
+            <div class="modal-content ">
+                <div class="modal-header" style="color : white; background : #0e4f76;">
+                    <h6 class="modal-title"><i class="fa fa-check-circle" style="color:#fff;font-size: 18px;"
+                            aria-hidden="true"></i>
+                        Create Format Type</h6>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form [formGroup]="RequestKindForm">
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="name" type="text" class="form-control" placeholder="Name">
+                                <span class="help-block text-danger"
+                                    *ngIf="hasError && RequestKindForm.get('name').hasError('required')"> *
+                                    required</span>
+                                <span class="help-block text-danger" *ngIf="hasError && duplicateRequestKindValue">*
+                                    already
+                                    exists</span>
+                            </div>
+                            <div style="font-size: 13px;" class="form-group col-lg-12">
+                                <input formControlName="description" type="text" class="form-control"
+                                    placeholder="Description">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-primary" (click)="createRequestKind()">Save</button>
+                    <button type="button" id="btnCreateRequestKindClosePopup" class="btn btn-previous"
+                        data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
