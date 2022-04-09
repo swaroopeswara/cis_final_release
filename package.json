@@ -46,7 +46,7 @@
     "jquery-ui-dist": "1.12.1",
     "leaflet-map": "0.2.1",
     "metrojs": "0.9.77",
-    "moment": "2.22.2",
+    "moment": "2.29.2",
     "ng-recaptcha": "^4.2.1",
     "ng2-charts": "1.6.0",
     "ng2-ckeditor": "1.2.2",
